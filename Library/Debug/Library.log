@@ -1,6 +1,3 @@
-﻿  Settings.cpp
-  Entity2D.cpp
-  Entity3D.cpp
-  ImageLoader.cpp
-  Generating Code...
-  Library.vcxproj -> D:\Work\GameDeveloping\NYP\Y2S1\2DGC\Assignment_2\NYP_Framework_Week16\Debug\Library.lib
+﻿  SpriteAnimation.cpp
+D:\Work\GameDeveloping\NYP\Y2S1\SP3\SP3\Group12_SP3\Library\Source\Primitives\SpriteAnimation.cpp(75,62): warning C4244: 'argument': conversion from 'double' to 'const unsigned int', possible loss of data
+  Library.vcxproj -> D:\Work\GameDeveloping\NYP\Y2S1\SP3\SP3\Group12_SP3\Debug\Library.lib

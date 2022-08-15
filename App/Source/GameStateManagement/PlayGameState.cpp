@@ -50,7 +50,7 @@ bool CPlayGameState::Init(void)
 		return false;
 	}
 
-	 cGameManager = CGameManager::GetInstance();
+	cGameManager = CGameManager::GetInstance();
 
 	return true;
 }

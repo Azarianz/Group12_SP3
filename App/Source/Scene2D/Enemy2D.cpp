@@ -107,15 +107,15 @@ bool CEnemy2D::Init(void)
 	quadMesh = CMeshBuilder::GenerateQuad(glm::vec4(1, 1, 1, 1), cSettings->TILE_WIDTH, cSettings->TILE_HEIGHT);
 
 	// Load the enemy2D texture
-	iTextureID = CImageLoader::GetInstance()->LoadTextureGetID("Image/dino_enemy.tga", true);
+	iTextureID = CImageLoader::GetInstance()->LoadTextureGetID("Image/Assets/Demon.tga", true);
 	if (iTextureID == 0)
 	{
-		cout << "Unable to load Image/dino_enemy.tga" << endl;
+		cout << "Unable to load Image/Assets/Demon.tga" << endl;
 		return false;
 	}
 
 	//CS: Init the color to white
-	runtimeColour = glm::vec4(1.0, 1.0, 1.0, 1.0);
+	runtimeColour = glm::vec4(1.0, 0.0, .0, 1.0);
 
 	// Set the Physics to fall status by default
 	cPhysics2D.Init();
@@ -177,10 +177,10 @@ void CEnemy2D::Update(const double dElapsedTime)
 			//cout << "StartPos: " << vec2Index.x << ", " << vec2Index.y << endl;
 			//cout << "TargetPos: " << cPlayer2D->vec2Index.x << ", " << cPlayer2D->vec2Index.y << endl;
 
-			auto path = cMap2D->PathFind(	 vec2Index,
-											 cPlayer2D->vec2Index,
-											 heuristic::euclidean,
-											 10);
+			auto path = cMap2D->PathFind(vec2Index,
+				cPlayer2D->vec2Index,
+				heuristic::euclidean,
+				10);
 			//cout << "=== Printing out the path ===" << endl;
 			//system("pause");
 
@@ -242,8 +242,8 @@ void CEnemy2D::Update(const double dElapsedTime)
 	//UpdateJumpFall(dElapsedTime);
 
 	// Update the UV Coordinates
-	vec2UVCoordinate.x = cSettings->ConvertIndexToUVSpace(cSettings->x, vec2Index.x, false, i32vec2NumMicroSteps.x*cSettings->MICRO_STEP_XAXIS);
-	vec2UVCoordinate.y = cSettings->ConvertIndexToUVSpace(cSettings->y, vec2Index.y, false, i32vec2NumMicroSteps.y*cSettings->MICRO_STEP_YAXIS);
+	vec2UVCoordinate.x = cSettings->ConvertIndexToUVSpace(cSettings->x, vec2Index.x, false, i32vec2NumMicroSteps.x * cSettings->MICRO_STEP_XAXIS);
+	vec2UVCoordinate.y = cSettings->ConvertIndexToUVSpace(cSettings->y, vec2Index.y, false, i32vec2NumMicroSteps.y * cSettings->MICRO_STEP_YAXIS);
 }
 
 /**
@@ -636,13 +636,13 @@ void CEnemy2D::UpdateJumpFall(const double dElapsedTime)
 bool CEnemy2D::InteractWithPlayer(void)
 {
 	glm::vec2 i32vec2PlayerPos = cPlayer2D->vec2Index;
-	
+
 	// Check if the enemy2D is within 1.5 indices of the player2D
-	if (((vec2Index.x >= i32vec2PlayerPos.x - 0.5) && 
+	if (((vec2Index.x >= i32vec2PlayerPos.x - 0.5) &&
 		(vec2Index.x <= i32vec2PlayerPos.x + 0.5))
-		&& 
+		&&
 		((vec2Index.y >= i32vec2PlayerPos.y - 0.5) &&
-		(vec2Index.y <= i32vec2PlayerPos.y + 0.5)))
+			(vec2Index.y <= i32vec2PlayerPos.y + 0.5)))
 	{
 		cout << "Gotcha!" << endl;
 		// Remove health by 1 (Spa)
@@ -799,7 +799,7 @@ void CEnemy2D::UpdatePosition(void)
 	}
 	if (i32vec2Direction.y < 0)
 	{
-		// Move left
+		// Move down
 		const int iOldIndex = vec2Index.y;
 		if (vec2Index.y >= 0)
 		{
@@ -827,7 +827,7 @@ void CEnemy2D::UpdatePosition(void)
 	}
 	else if (i32vec2Direction.y > 0)
 	{
-		// Move right
+		// Move up
 		const int iOldIndex = vec2Index.y;
 		if (vec2Index.y < (int)cSettings->NUM_TILES_YAXIS)
 		{

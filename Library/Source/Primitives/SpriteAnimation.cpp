@@ -114,6 +114,7 @@ param None
 \return None
 */
 /******************************************************************************/
+#include <iostream>
 void CSpriteAnimation::Render()
 {
 	glEnableVertexAttribArray(0);
@@ -126,7 +127,7 @@ void CSpriteAnimation::Render()
 	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)(sizeof(glm::vec3) + sizeof(glm::vec4)));
 
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexBuffer);
-
+	std::cout << "currentFrame: " << currentFrame << std::endl;
 	//Draw based on the current frame
 	if (mode == DRAW_LINES)
 		glDrawElements(GL_LINES, 6, GL_UNSIGNED_INT, (void*)(currentFrame * 6 * sizeof(GLuint)));

@@ -142,6 +142,8 @@ protected:
 	// Current FSM
 	FSM sCurrentFSM;
 
+	float enemySpeed = 0.8f;
+
 	// FSM counter - count how many frames it has been in this FSM
 	int iFSMCounter;
 

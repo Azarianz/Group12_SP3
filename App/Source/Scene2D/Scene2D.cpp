@@ -78,7 +78,7 @@ CScene2D::~CScene2D(void)
 
 /**
 @brief Init Initialise this instance
-*/ 
+*/
 bool CScene2D::Init(void)
 {
 	// Include Shader Manager
@@ -164,7 +164,7 @@ bool CScene2D::Init(void)
 	cSoundController->LoadSound(FileSystem::getPath("Sounds\\StageTheme.ogg"), 4, true);
 
 	return true;
-}	
+}
 
 /**
 @brief Update Update this instance
@@ -173,7 +173,7 @@ bool CScene2D::Update(const double dElapsedTime)
 {
 	// Call the cPlayer2D's update method before Map2D as we want to capture the inputs before map2D update
 	cPlayer2D->Update(dElapsedTime);
-	
+
 	// Call all the cEnemy2D's update method before Map2D
 	// as we want to capture the updateds before map2D update
 	for (int i = 0; i < enemyVector.size(); i++)
@@ -222,7 +222,7 @@ bool CScene2D::Update(const double dElapsedTime)
 		//cSoundController->PlaySoundByID(2);
 		//return false;
 	}
-	
+
 	// Call the cGUI_Scene2D's update method
 	cGUI_Scene2D->Update(dElapsedTime);
 

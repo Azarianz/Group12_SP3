@@ -6,7 +6,7 @@
  */
 #include "Map2D.h"
 
-// Include Shader Manager
+ // Include Shader Manager
 #include "RenderControl\ShaderManager.h"
 
 // Include Filesystem
@@ -41,7 +41,7 @@ CMap2D::~CMap2D(void)
 		{
 			delete[] arrMapInfo[uiLevel][iRow];
 		}
-		delete [] arrMapInfo[uiLevel];
+		delete[] arrMapInfo[uiLevel];
 	}
 	delete[] arrMapInfo;
 
@@ -65,20 +65,20 @@ CMap2D::~CMap2D(void)
 
 /**
 @brief Init Initialise this instance
-*/ 
-bool CMap2D::Init(	const unsigned int uiNumLevels,
-					const unsigned int uiNumRows,
-					const unsigned int uiNumCols)
+*/
+bool CMap2D::Init(const unsigned int uiNumLevels,
+	const unsigned int uiNumRows,
+	const unsigned int uiNumCols)
 {
 	// Get the handler to the CSettings instance
 	cSettings = CSettings::GetInstance();
 
 	// Create the arrMapInfo and initialise to 0
 	// Start by initialising the number of levels
-	arrMapInfo = new Grid** [uiNumLevels];
+	arrMapInfo = new Grid * *[uiNumLevels];
 	for (unsigned uiLevel = 0; uiLevel < uiNumLevels; uiLevel++)
 	{
-		arrMapInfo[uiLevel] = new Grid* [uiNumRows];
+		arrMapInfo[uiLevel] = new Grid * [uiNumRows];
 		for (unsigned uiRow = 0; uiRow < uiNumRows; uiRow++)
 		{
 			arrMapInfo[uiLevel][uiRow] = new Grid[uiNumCols];
@@ -103,12 +103,12 @@ bool CMap2D::Init(	const unsigned int uiNumLevels,
 	quadMesh = CMeshBuilder::GenerateQuad(glm::vec4(1, 1, 1, 1), cSettings->TILE_WIDTH, cSettings->TILE_HEIGHT);
 
 	// Load and create textures
- #pragma region MyRegion
-	// Load the ground texture
-	iTextureID = CImageLoader::GetInstance()->LoadTextureGetID("Image/ground.tga", true);
+#pragma region MyRegion
+   // Load the ground texture
+	iTextureID = CImageLoader::GetInstance()->LoadTextureGetID("Image/Assets/wall.tga", true);
 	if (iTextureID == 0)
 	{
-		cout << "Unable to load Image/Scene2D_GroundTile.tga" << endl;
+		cout << "Image/Assets/wall.tga" << endl;
 		return false;
 	}
 	else
@@ -121,7 +121,7 @@ bool CMap2D::Init(	const unsigned int uiNumLevels,
 	iTextureID = CImageLoader::GetInstance()->LoadTextureGetID("Image/carrot.tga", true);
 	if (iTextureID == 0)
 	{
-		cout << "Unable to load Image/Scene2D_TreeTile.tga" << endl;
+		cout << "Unable to load Image/carrot.tga" << endl;
 		return false;
 	}
 	else
@@ -137,7 +137,7 @@ bool CMap2D::Init(	const unsigned int uiNumLevels,
 		cout << "Unable to load Image/Scene2D_Spikes.tga";
 		return false;
 	}
-	else 
+	else
 	{
 		// Store the image texture ID into MapOfTextureIDs
 		MapOfTextureIDs.insert(pair<int, int>(20, iTextureID));
@@ -150,7 +150,7 @@ bool CMap2D::Init(	const unsigned int uiNumLevels,
 		cout << "Unable to load Image/Scene2D_Spa.tga" << endl;
 		return false;
 	}
-	else 
+	else
 	{
 		//Store the image texture ID into MapOfTextureIds
 		MapOfTextureIDs.insert(pair<int, int>(21, iTextureID));
@@ -181,6 +181,7 @@ bool CMap2D::Init(	const unsigned int uiNumLevels,
 		// Store the texture ID into MapOfTextureIDs
 		MapOfTextureIDs.insert(pair<int, int>(99, iTextureID));
 	}
+
 #pragma endregion
 
 	// Initialise the variables for AStar
@@ -194,8 +195,8 @@ bool CMap2D::Init(	const unsigned int uiNumLevels,
 						{ -1, -1 }, { 1, 1 }, { -1, 1 }, { 1, -1 } };
 
 	// Resize these 2 lists
-	m_cameFromList.resize(cSettings->NUM_TILES_YAXIS* cSettings->NUM_TILES_XAXIS);
-	m_closedList.resize(cSettings->NUM_TILES_YAXIS* cSettings->NUM_TILES_XAXIS, false);
+	m_cameFromList.resize(cSettings->NUM_TILES_YAXIS * cSettings->NUM_TILES_XAXIS);
+	m_closedList.resize(cSettings->NUM_TILES_YAXIS * cSettings->NUM_TILES_XAXIS, false);
 
 	return true;
 }
@@ -203,10 +204,10 @@ bool CMap2D::Init(	const unsigned int uiNumLevels,
 /**
  @brief Find a path
  */
-std::vector<glm::vec2> CMap2D::PathFind(		const glm::vec2& startPos, 
-												const glm::vec2& targetPos,
-												HeuristicFunction heuristicFunc, 
-												int weight)
+std::vector<glm::vec2> CMap2D::PathFind(const glm::vec2& startPos,
+	const glm::vec2& targetPos,
+	HeuristicFunction heuristicFunc,
+	int weight)
 {
 	// Check if the startPos and targetPost are blocked
 	if (isBlocked(startPos.y, startPos.x) ||
@@ -512,8 +513,8 @@ void CMap2D::Render(void)
 		{
 			transform = glm::mat4(1.0f); // make sure to initialize matrix to identity matrix first
 			transform = glm::translate(transform, glm::vec3(cSettings->ConvertIndexToUVSpace(cSettings->x, uiCol, false, 0),
-															cSettings->ConvertIndexToUVSpace(cSettings->y, uiRow, true, 0),
-															0.0f));
+				cSettings->ConvertIndexToUVSpace(cSettings->y, uiRow, true, 0),
+				0.0f));
 			//transform = glm::rotate(transform, (float)glfwGetTime(), glm::vec3(0.0f, 0.0f, 1.0f));
 
 			// Update the shaders with the latest transform
@@ -624,7 +625,7 @@ int CMap2D::GetMapInfo(const unsigned int uiRow, const int unsigned uiCol, const
 
 /**
  @brief Load a map
- */ 
+ */
 bool CMap2D::LoadMap(string filename, const unsigned int uiCurLevel)
 {
 	doc = rapidcsv::Document(FileSystem::getPath(filename).c_str());
@@ -642,7 +643,7 @@ bool CMap2D::LoadMap(string filename, const unsigned int uiCurLevel)
 	{
 		// Read a row from the CSV file
 		std::vector<std::string> row = doc.GetRow<std::string>(uiRow);
-		
+
 		// Load a particular CSV value into the arrMapInfo
 		for (unsigned int uiCol = 0; uiCol < cSettings->NUM_TILES_XAXIS; ++uiCol)
 		{

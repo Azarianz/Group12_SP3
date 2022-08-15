@@ -104,6 +104,7 @@ protected:
 	// Count the number of jumps
 	int iJumpCount;
 	int dirFacing = 1;
+	float playerSpeed = 1;
 
 	// Constructor
 	CPlayer2D(void);

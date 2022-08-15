@@ -95,27 +95,28 @@ bool CPlayer2D::Init(void)
 
 	glGenVertexArrays(1, &VAO);
 	glBindVertexArray(VAO);
-	
+	 
 	// Load the player texture 
-	iTextureID = CImageLoader::GetInstance()->LoadTextureGetID("Image/playersheet.png", true);
+	iTextureID = CImageLoader::GetInstance()->LoadTextureGetID("Image/Assets/Player - Copy.png", true);
 	if (iTextureID == 0)
 	{
-		cout << "Unable to load Image/scene2d_player.png" << endl;
+		cout << "Unable to load Image/Assets/Player.png" << endl;
 		return false;
 	}
-	
+
 	//CS: Create the animated sprite and setup the animation 
 	animatedSprites = CMeshBuilder::GenerateSpriteAnimation(3, 3, cSettings->TILE_WIDTH, cSettings->TILE_HEIGHT);
 	animatedSprites->AddAnimation("idle_up", 3, 3);
 	animatedSprites->AddAnimation("idle_down", 7, 7);
 	animatedSprites->AddAnimation("idle_left", 5, 5);
 	animatedSprites->AddAnimation("idle_right", 1, 1);
-	animatedSprites->AddAnimation("right", 0, 1);
+	animatedSprites->AddAnimation("idle", 0, 0);
+	animatedSprites->AddAnimation("right", 2, 2);
 	animatedSprites->AddAnimation("left", 4, 5);
 	animatedSprites->AddAnimation("up", 2, 3);
 	animatedSprites->AddAnimation("down", 6, 7);
 	//CS: Play the "idle" animation as default
-	animatedSprites->PlayAnimation("idle", -1, 1.0f);
+	animatedSprites->PlayAnimation("right", 0, 0.2f);
 
 	//CS: Init the color to white
 	runtimeColour = glm::vec4(1.0, 1.0, 1.0, 1.0);
@@ -167,7 +168,7 @@ bool CPlayer2D::Reset()
 	iJumpCount = 0;
 
 	//CS: Play the "idle" animation as default
-	animatedSprites->PlayAnimation("idle", -1, 1.0f);
+	animatedSprites->PlayAnimation("right", -1, 0.2f);
 
 	//CS: Init the color to white
 	runtimeColour = glm::vec4(1.0, 1.0, 1.0, 1.0);
@@ -200,7 +201,7 @@ void CPlayer2D::Update(const double dElapsedTime)
 			// Calculate the new position to the left
 			if (vec2Index.x >= 0)
 			{
-				vec2NumMicroSteps.x--;
+				vec2NumMicroSteps.x -= playerSpeed;
 				if (vec2NumMicroSteps.x < 0)
 				{
 					vec2NumMicroSteps.x = ((int)cSettings->NUM_STEPS_PER_TILE_XAXIS) - 1;
@@ -226,7 +227,7 @@ void CPlayer2D::Update(const double dElapsedTime)
 			}
 
 			//CS: Play the "left" animation
-			animatedSprites->PlayAnimation("left", -1, 0.2f);
+			animatedSprites->PlayAnimation("right", -1, 0.2f);
 			dirFacing = 0;
 
 			//CS: Change Color
@@ -292,7 +293,7 @@ void CPlayer2D::Update(const double dElapsedTime)
 			}
 
 			//CS: Play the "idle" animation
-			animatedSprites->PlayAnimation("up", -1, 0.2f);
+			animatedSprites->PlayAnimation("right", -1, 0.2f);
 			dirFacing = 2;
 
 			//CS: Change Color
@@ -322,7 +323,7 @@ void CPlayer2D::Update(const double dElapsedTime)
 			}
 
 			//CS: Play the "idle" animation
-			animatedSprites->PlayAnimation("down", -1, 0.2f);
+			animatedSprites->PlayAnimation("right", -1, 0.2f);
 			dirFacing = 3;
 
 			//CS: Change Color
@@ -365,8 +366,8 @@ void CPlayer2D::Update(const double dElapsedTime)
 	animatedSprites->Update(dElapsedTime);
 
 	// Update the UV Coordinates
-	vec2UVCoordinate.x = cSettings->ConvertIndexToUVSpace(cSettings->x, vec2Index.x, false, vec2NumMicroSteps.x*cSettings->MICRO_STEP_XAXIS);
-	vec2UVCoordinate.y = cSettings->ConvertIndexToUVSpace(cSettings->y, vec2Index.y, false, vec2NumMicroSteps.y*cSettings->MICRO_STEP_YAXIS);
+	vec2UVCoordinate.x = cSettings->ConvertIndexToUVSpace(cSettings->x, vec2Index.x, false, vec2NumMicroSteps.x * cSettings->MICRO_STEP_XAXIS);
+	vec2UVCoordinate.y = cSettings->ConvertIndexToUVSpace(cSettings->y, vec2Index.y, false, vec2NumMicroSteps.y * cSettings->MICRO_STEP_YAXIS);
 }
 
 /**
@@ -395,8 +396,8 @@ void CPlayer2D::Render(void)
 
 	transform = glm::mat4(1.0f); // make sure to initialize matrix to identity matrix first
 	transform = glm::translate(transform, glm::vec3(vec2UVCoordinate.x,
-													vec2UVCoordinate.y,
-													0.0f));
+		vec2UVCoordinate.y,
+		0.0f));
 	// Update the shaders with the latest transform
 	glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(transform));
 	glUniform4fv(colorLoc, 1, glm::value_ptr(runtimeColour));
@@ -406,10 +407,10 @@ void CPlayer2D::Render(void)
 	// Get the texture to be rendered
 	glBindTexture(GL_TEXTURE_2D, iTextureID);
 
-		//CS: Render the animated sprite
-		glBindVertexArray(VAO);
-		animatedSprites->Render();
-		glBindVertexArray(0);
+	//CS: Render the animated sprite
+	glBindVertexArray(VAO);
+	animatedSprites->Render();
+	glBindVertexArray(0);
 	glBindTexture(GL_TEXTURE_2D, 0);
 }
 
@@ -591,8 +592,8 @@ bool CPlayer2D::IsMidAir(void)
 		return false;
 
 	// Check if the tile below the player's current position is empty
-	if ((vec2NumMicroSteps.x == 0) && 
-		(cMap2D->GetMapInfo(vec2Index.y-1, vec2Index.x) == 0))
+	if ((vec2NumMicroSteps.x == 0) &&
+		(cMap2D->GetMapInfo(vec2Index.y - 1, vec2Index.x) == 0))
 	{
 		return true;
 	}
@@ -708,11 +709,11 @@ void CPlayer2D::UpdateJumpFall(const double dElapsedTime)
 	}
 }
 
-void CPlayer2D::UpdateHealthLives(void) 
+void CPlayer2D::UpdateHealthLives(void)
 {
 	// Update Health and Lives
 	cInventoryItem = cInventoryManager->GetItem("Lives");
-	
+
 
 	if (cInventoryItem->GetCount() < 3)
 	{
