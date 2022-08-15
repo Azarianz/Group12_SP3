@@ -1,0 +1,237 @@
+﻿  Player2D.cpp
+D:\Work\GameDeveloping\NYP\Y2S1\2DGC\Assignment_2\NYP_Framework_Week16\App\Source\Scene2D\Player2D.cpp(206,71): warning C4244: '=': conversion from 'int' to 'T', possible loss of data
+          with
+          [
+              T=float
+          ]
+D:\Work\GameDeveloping\NYP\Y2S1\2DGC\Assignment_2\NYP_Framework_Week16\App\Source\Scene2D\Player2D.cpp(309,71): warning C4244: '=': conversion from 'int' to 'T', possible loss of data
+          with
+          [
+              T=float
+          ]
+D:\Work\GameDeveloping\NYP\Y2S1\2DGC\Assignment_2\NYP_Framework_Week16\App\Source\Scene2D\Player2D.cpp(368,79): warning C4244: 'argument': conversion from 'T' to 'const int', possible loss of data
+          with
+          [
+              T=float
+          ]
+D:\Work\GameDeveloping\NYP\Y2S1\2DGC\Assignment_2\NYP_Framework_Week16\App\Source\Scene2D\Player2D.cpp(369,79): warning C4244: 'argument': conversion from 'T' to 'const int', possible loss of data
+          with
+          [
+              T=float
+          ]
+D:\Work\GameDeveloping\NYP\Y2S1\2DGC\Assignment_2\NYP_Framework_Week16\App\Source\Scene2D\Player2D.cpp(443,52): warning C4244: '=': conversion from 'int' to 'T', possible loss of data
+          with
+          [
+              T=float
+          ]
+D:\Work\GameDeveloping\NYP\Y2S1\2DGC\Assignment_2\NYP_Framework_Week16\App\Source\Scene2D\Player2D.cpp(451,52): warning C4244: '=': conversion from 'int' to 'T', possible loss of data
+          with
+          [
+              T=float
+          ]
+D:\Work\GameDeveloping\NYP\Y2S1\2DGC\Assignment_2\NYP_Framework_Week16\App\Source\Scene2D\Player2D.cpp(481,49): warning C4244: 'argument': conversion from 'T' to 'const unsigned int', possible loss of data
+          with
+          [
+              T=float
+          ]
+D:\Work\GameDeveloping\NYP\Y2S1\2DGC\Assignment_2\NYP_Framework_Week16\App\Source\Scene2D\Player2D.cpp(481,36): warning C4244: 'argument': conversion from 'T' to 'const unsigned int', possible loss of data
+          with
+          [
+              T=float
+          ]
+D:\Work\GameDeveloping\NYP\Y2S1\2DGC\Assignment_2\NYP_Framework_Week16\App\Source\Scene2D\Player2D.cpp(490,50): warning C4244: 'argument': conversion from 'T' to 'const unsigned int', possible loss of data
+          with
+          [
+              T=float
+          ]
+D:\Work\GameDeveloping\NYP\Y2S1\2DGC\Assignment_2\NYP_Framework_Week16\App\Source\Scene2D\Player2D.cpp(490,37): warning C4244: 'argument': conversion from 'T' to 'const unsigned int', possible loss of data
+          with
+          [
+              T=float
+          ]
+D:\Work\GameDeveloping\NYP\Y2S1\2DGC\Assignment_2\NYP_Framework_Week16\App\Source\Scene2D\Player2D.cpp(491,51): warning C4244: 'argument': conversion from 'T' to 'const unsigned int', possible loss of data
+          with
+          [
+              T=float
+          ]
+D:\Work\GameDeveloping\NYP\Y2S1\2DGC\Assignment_2\NYP_Framework_Week16\App\Source\Scene2D\Player2D.cpp(491,37): warning C4244: 'argument': conversion from 'T' to 'const unsigned int', possible loss of data
+          with
+          [
+              T=float
+          ]
+D:\Work\GameDeveloping\NYP\Y2S1\2DGC\Assignment_2\NYP_Framework_Week16\App\Source\Scene2D\Player2D.cpp(510,52): warning C4244: 'argument': conversion from 'T' to 'const unsigned int', possible loss of data
+          with
+          [
+              T=float
+          ]
+D:\Work\GameDeveloping\NYP\Y2S1\2DGC\Assignment_2\NYP_Framework_Week16\App\Source\Scene2D\Player2D.cpp(510,36): warning C4244: 'argument': conversion from 'T' to 'const unsigned int', possible loss of data
+          with
+          [
+              T=float
+          ]
+D:\Work\GameDeveloping\NYP\Y2S1\2DGC\Assignment_2\NYP_Framework_Week16\App\Source\Scene2D\Player2D.cpp(519,53): warning C4244: 'argument': conversion from 'T' to 'const unsigned int', possible loss of data
+          with
+          [
+              T=float
+          ]
+D:\Work\GameDeveloping\NYP\Y2S1\2DGC\Assignment_2\NYP_Framework_Week16\App\Source\Scene2D\Player2D.cpp(519,37): warning C4244: 'argument': conversion from 'T' to 'const unsigned int', possible loss of data
+          with
+          [
+              T=float
+          ]
+D:\Work\GameDeveloping\NYP\Y2S1\2DGC\Assignment_2\NYP_Framework_Week16\App\Source\Scene2D\Player2D.cpp(520,54): warning C4244: 'argument': conversion from 'T' to 'const unsigned int', possible loss of data
+          with
+          [
+              T=float
+          ]
+D:\Work\GameDeveloping\NYP\Y2S1\2DGC\Assignment_2\NYP_Framework_Week16\App\Source\Scene2D\Player2D.cpp(520,37): warning C4244: 'argument': conversion from 'T' to 'const unsigned int', possible loss of data
+          with
+          [
+              T=float
+          ]
+D:\Work\GameDeveloping\NYP\Y2S1\2DGC\Assignment_2\NYP_Framework_Week16\App\Source\Scene2D\Player2D.cpp(540,53): warning C4244: 'argument': conversion from 'T' to 'const unsigned int', possible loss of data
+          with
+          [
+              T=float
+          ]
+D:\Work\GameDeveloping\NYP\Y2S1\2DGC\Assignment_2\NYP_Framework_Week16\App\Source\Scene2D\Player2D.cpp(540,39): warning C4244: 'argument': conversion from 'T' to 'const unsigned int', possible loss of data
+          with
+          [
+              T=float
+          ]
+D:\Work\GameDeveloping\NYP\Y2S1\2DGC\Assignment_2\NYP_Framework_Week16\App\Source\Scene2D\Player2D.cpp(549,54): warning C4244: 'argument': conversion from 'T' to 'const unsigned int', possible loss of data
+          with
+          [
+              T=float
+          ]
+D:\Work\GameDeveloping\NYP\Y2S1\2DGC\Assignment_2\NYP_Framework_Week16\App\Source\Scene2D\Player2D.cpp(549,40): warning C4244: 'argument': conversion from 'T' to 'const unsigned int', possible loss of data
+          with
+          [
+              T=float
+          ]
+D:\Work\GameDeveloping\NYP\Y2S1\2DGC\Assignment_2\NYP_Framework_Week16\App\Source\Scene2D\Player2D.cpp(550,54): warning C4244: 'argument': conversion from 'T' to 'const unsigned int', possible loss of data
+          with
+          [
+              T=float
+          ]
+D:\Work\GameDeveloping\NYP\Y2S1\2DGC\Assignment_2\NYP_Framework_Week16\App\Source\Scene2D\Player2D.cpp(550,37): warning C4244: 'argument': conversion from 'T' to 'const unsigned int', possible loss of data
+          with
+          [
+              T=float
+          ]
+D:\Work\GameDeveloping\NYP\Y2S1\2DGC\Assignment_2\NYP_Framework_Week16\App\Source\Scene2D\Player2D.cpp(562,49): warning C4244: 'argument': conversion from 'T' to 'const unsigned int', possible loss of data
+          with
+          [
+              T=float
+          ]
+D:\Work\GameDeveloping\NYP\Y2S1\2DGC\Assignment_2\NYP_Framework_Week16\App\Source\Scene2D\Player2D.cpp(562,36): warning C4244: 'argument': conversion from 'T' to 'const unsigned int', possible loss of data
+          with
+          [
+              T=float
+          ]
+D:\Work\GameDeveloping\NYP\Y2S1\2DGC\Assignment_2\NYP_Framework_Week16\App\Source\Scene2D\Player2D.cpp(571,50): warning C4244: 'argument': conversion from 'T' to 'const unsigned int', possible loss of data
+          with
+          [
+              T=float
+          ]
+D:\Work\GameDeveloping\NYP\Y2S1\2DGC\Assignment_2\NYP_Framework_Week16\App\Source\Scene2D\Player2D.cpp(571,37): warning C4244: 'argument': conversion from 'T' to 'const unsigned int', possible loss of data
+          with
+          [
+              T=float
+          ]
+D:\Work\GameDeveloping\NYP\Y2S1\2DGC\Assignment_2\NYP_Framework_Week16\App\Source\Scene2D\Player2D.cpp(572,50): warning C4244: 'argument': conversion from 'T' to 'const unsigned int', possible loss of data
+          with
+          [
+              T=float
+          ]
+D:\Work\GameDeveloping\NYP\Y2S1\2DGC\Assignment_2\NYP_Framework_Week16\App\Source\Scene2D\Player2D.cpp(572,34): warning C4244: 'argument': conversion from 'T' to 'const unsigned int', possible loss of data
+          with
+          [
+              T=float
+          ]
+D:\Work\GameDeveloping\NYP\Y2S1\2DGC\Assignment_2\NYP_Framework_Week16\App\Source\Scene2D\Player2D.cpp(595,47): warning C4244: 'argument': conversion from 'T' to 'const unsigned int', possible loss of data
+          with
+          [
+              T=float
+          ]
+D:\Work\GameDeveloping\NYP\Y2S1\2DGC\Assignment_2\NYP_Framework_Week16\App\Source\Scene2D\Player2D.cpp(595,34): warning C4244: 'argument': conversion from 'T' to 'const unsigned int', possible loss of data
+          with
+          [
+              T=float
+          ]
+D:\Work\GameDeveloping\NYP\Y2S1\2DGC\Assignment_2\NYP_Framework_Week16\App\Source\Scene2D\Player2D.cpp(616,24): warning C4244: 'initializing': conversion from 'T' to 'int', possible loss of data
+          with
+          [
+              T=float
+          ]
+D:\Work\GameDeveloping\NYP\Y2S1\2DGC\Assignment_2\NYP_Framework_Week16\App\Source\Scene2D\Player2D.cpp(636,29): warning C4244: 'initializing': conversion from 'T' to 'int', possible loss of data
+          with
+          [
+              T=float
+          ]
+D:\Work\GameDeveloping\NYP\Y2S1\2DGC\Assignment_2\NYP_Framework_Week16\App\Source\Scene2D\Player2D.cpp(640,18): warning C4244: '=': conversion from 'int' to 'T', possible loss of data
+          with
+          [
+              T=float
+          ]
+D:\Work\GameDeveloping\NYP\Y2S1\2DGC\Assignment_2\NYP_Framework_Week16\App\Source\Scene2D\Player2D.cpp(670,24): warning C4244: 'initializing': conversion from 'T' to 'int', possible loss of data
+          with
+          [
+              T=float
+          ]
+D:\Work\GameDeveloping\NYP\Y2S1\2DGC\Assignment_2\NYP_Framework_Week16\App\Source\Scene2D\Player2D.cpp(677,57): warning C4244: '-=': conversion from 'double' to 'T', possible loss of data
+          with
+          [
+              T=float
+          ]
+D:\Work\GameDeveloping\NYP\Y2S1\2DGC\Assignment_2\NYP_Framework_Week16\App\Source\Scene2D\Player2D.cpp(680,70): warning C4244: '=': conversion from 'int' to 'T', possible loss of data
+          with
+          [
+              T=float
+          ]
+D:\Work\GameDeveloping\NYP\Y2S1\2DGC\Assignment_2\NYP_Framework_Week16\App\Source\Scene2D\Player2D.cpp(690,29): warning C4244: 'initializing': conversion from 'T' to 'int', possible loss of data
+          with
+          [
+              T=float
+          ]
+D:\Work\GameDeveloping\NYP\Y2S1\2DGC\Assignment_2\NYP_Framework_Week16\App\Source\Scene2D\Player2D.cpp(694,18): warning C4244: '=': conversion from 'int' to 'T', possible loss of data
+          with
+          [
+              T=float
+          ]
+D:\Work\GameDeveloping\NYP\Y2S1\2DGC\Assignment_2\NYP_Framework_Week16\App\Source\Scene2D\Player2D.cpp(700,22): warning C4244: '=': conversion from 'int' to 'T', possible loss of data
+          with
+          [
+              T=float
+          ]
+D:\Work\GameDeveloping\NYP\Y2S1\2DGC\Assignment_2\NYP_Framework_Week16\App\Source\Scene2D\Player2D.cpp(740,51): warning C4244: 'argument': conversion from 'T' to 'const unsigned int', possible loss of data
+          with
+          [
+              T=float
+          ]
+D:\Work\GameDeveloping\NYP\Y2S1\2DGC\Assignment_2\NYP_Framework_Week16\App\Source\Scene2D\Player2D.cpp(740,38): warning C4244: 'argument': conversion from 'T' to 'const unsigned int', possible loss of data
+          with
+          [
+              T=float
+          ]
+D:\Work\GameDeveloping\NYP\Y2S1\2DGC\Assignment_2\NYP_Framework_Week16\App\Source\Scene2D\Player2D.cpp(744,44): warning C4244: 'argument': conversion from 'T' to 'const unsigned int', possible loss of data
+          with
+          [
+              T=float
+          ]
+D:\Work\GameDeveloping\NYP\Y2S1\2DGC\Assignment_2\NYP_Framework_Week16\App\Source\Scene2D\Player2D.cpp(744,31): warning C4244: 'argument': conversion from 'T' to 'const unsigned int', possible loss of data
+          with
+          [
+              T=float
+          ]
+D:\Work\GameDeveloping\NYP\Y2S1\2DGC\Assignment_2\NYP_Framework_Week16\App\Source\Scene2D\Player2D.cpp(771,44): warning C4244: 'argument': conversion from 'T' to 'const unsigned int', possible loss of data
+          with
+          [
+              T=float
+          ]
+D:\Work\GameDeveloping\NYP\Y2S1\2DGC\Assignment_2\NYP_Framework_Week16\App\Source\Scene2D\Player2D.cpp(771,31): warning C4244: 'argument': conversion from 'T' to 'const unsigned int', possible loss of data
+          with
+          [
+              T=float
+          ]
+  App.vcxproj -> D:\Work\GameDeveloping\NYP\Y2S1\2DGC\Assignment_2\NYP_Framework_Week16\Debug\App.exe
