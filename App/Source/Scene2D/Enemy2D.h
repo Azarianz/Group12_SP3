@@ -32,7 +32,7 @@ class CMap2D;
 // Include Pet2D
 #include "Pet2D.h"
 
-class CEnemy2D : public CEntity2D
+class CEnemy2D : public CSingletonTemplate<CEnemy2D>, public CEntity2D
 {
 public:
 	// Constructor
@@ -94,7 +94,8 @@ protected:
 	{
 		IDLE = 0,
 		PATROL = 1,
-		ATTACK = 2,
+		CHASE = 2,
+		HUNTING = 3,
 		NUM_FSM
 	};
 
@@ -127,6 +128,10 @@ protected:
 	// Settings
 	CSettings* cSettings;
 
+	// Keyboard Controller singleton instance
+	CKeyboardController* cKeyboardController;
+
+
 	// Physics
 	CPhysics2D cPhysics2D;
 
@@ -141,6 +146,9 @@ protected:
 	
 	//Player initial spawn location
 	glm::vec2 playerStart = glm::vec2(2, 6);
+
+	//Last Known Location
+	glm::vec2 playerLast = playerStart;
 
 	// InventoryManager
 	CInventoryManager* cInventoryManager;

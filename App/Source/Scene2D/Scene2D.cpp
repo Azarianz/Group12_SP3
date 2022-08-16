@@ -50,12 +50,11 @@ CScene2D::~CScene2D(void)
 	}
 
 	// Destroy the enemies
-	for (int i = 0; i < enemyVector.size(); i++)
+	if (cEnemy2D)
 	{
-		delete enemyVector[i];
-		enemyVector[i] = NULL;
+		cEnemy2D->Destroy();
+		cEnemy2D = NULL;
 	}
-	enemyVector.clear();
 
 	if (cMap2D)
 	{
@@ -126,24 +125,15 @@ bool CScene2D::Init(void)
 	}
 
 	// Create and initialise the CEnemy2D
-	enemyVector.clear();
-	while (true)
+	cEnemy2D = CEnemy2D::GetInstance();
+	// Pass shader to cEnemy2D
+	cEnemy2D->SetShader("Shader2D_Colour");
+	if (cEnemy2D->Init() == false)
 	{
-		CEnemy2D* cEnemy2D = new CEnemy2D();
-		// Pass shader to cEnemy2D
-		cEnemy2D->SetShader("Shader2D_Colour");
-		// Initialise the instance
-		if (cEnemy2D->Init() == true)
-		{
-			cEnemy2D->SetPlayer2D(cPlayer2D);
-			enemyVector.push_back(cEnemy2D);
-		}
-		else
-		{
-			// Break out of this loop if the enemy has all been loaded
-			break;
-		}
+		cout << "Failed to load CEnemy2D" << endl;
+		return false;
 	}
+	cEnemy2D->SetPlayer2D(cPlayer2D);
 
 	// Create and initialise the CPet2D
 	cPet2D = CPet2D::GetInstance();
@@ -191,12 +181,9 @@ bool CScene2D::Update(const double dElapsedTime)
 	cPlayer2D->Update(dElapsedTime);
 
 	// Call all the cEnemy2D's update method before Map2D
-	// as we want to capture the updateds before map2D update
-	for (int i = 0; i < enemyVector.size(); i++)
-	{
-		enemyVector[i]->Update(dElapsedTime);
-	}
+	cEnemy2D->Update(dElapsedTime);
 
+	// Call all the cPet2D's updated method
 	cPet2D->Update(dElapsedTime);
 
 	// Call the Map2D's update method
@@ -268,15 +255,12 @@ void CScene2D::PreRender(void)
  */
 void CScene2D::Render(void)
 {
-	for (int i = 0; i < enemyVector.size(); i++)
-	{
-		// Call the CEnemy2D's PreRender()
-		enemyVector[i]->PreRender();
-		// Call the CEnemy2D's Render()
-		enemyVector[i]->Render();
-		// Call the CEnemy2D's PostRender()
-		enemyVector[i]->PostRender();
-	}
+	// Call the CEnemy2D's PreRender()
+	cEnemy2D->PreRender();
+	// Call the CEnemy2D's Render()
+	cEnemy2D->Render();
+	// Call the CEnemy2D's PostRender()
+	cEnemy2D->PostRender();
 
 	// Call the CPet2D's PreRender()
 	cPet2D->PreRender();

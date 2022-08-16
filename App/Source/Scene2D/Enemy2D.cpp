@@ -81,6 +81,9 @@ CEnemy2D::~CEnemy2D(void)
   */
 bool CEnemy2D::Init(void)
 {
+	// Keyboard Controller singleton instance
+	cKeyboardController = CKeyboardController::GetInstance();
+
 	// Get the handler to the CSettings instance
 	cSettings = CSettings::GetInstance();
 
@@ -135,6 +138,12 @@ bool CEnemy2D::Init(void)
  */
 void CEnemy2D::Update(const double dElapsedTime)
 {
+	if (cKeyboardController->IsKeyReleased(GLFW_KEY_SPACE))
+	{
+		sCurrentFSM = HUNTING;
+		playerLast = cPlayer2D->vec2Index;
+	}
+
 	if (!bIsActive)
 		return;
 
@@ -158,7 +167,7 @@ void CEnemy2D::Update(const double dElapsedTime)
 		}
 		else if (cPhysics2D.CalculateDistance(vec2Index, cPlayer2D->vec2Index) < 6.0f)
 		{
-			sCurrentFSM = ATTACK;
+			sCurrentFSM = CHASE;
 			iFSMCounter = 0;
 		}
 		else
@@ -169,7 +178,7 @@ void CEnemy2D::Update(const double dElapsedTime)
 		}
 		iFSMCounter++;
 		break;
-	case ATTACK:
+	case CHASE:
 		if (cPhysics2D.CalculateDistance(vec2Index, cPlayer2D->vec2Index) < 6.0f)
 		{
 			//Calculate a path to the player
@@ -228,12 +237,66 @@ void CEnemy2D::Update(const double dElapsedTime)
 			{
 				sCurrentFSM = PATROL;
 				iFSMCounter = 0;
-				cout << "ATTACK : Reset counter: " << iFSMCounter << endl;
+				cout << "CHASE : Reset counter: " << iFSMCounter << endl;
 			}
 
 		}
 		iFSMCounter++;
 		break;
+	case HUNTING:
+		if (iFSMCounter < iMaxFSMCounter)
+		{
+			if (cPhysics2D.CalculateDistance(vec2Index, cPlayer2D->vec2Index) < 6.0f)
+			{
+				sCurrentFSM = CHASE;
+				iFSMCounter = 0;
+				cout << "Switching to CHASE State" << endl;
+			}
+
+			iFSMCounter = 0;
+
+			//Calculate a path to the player
+			auto path = cMap2D->PathFind(vec2Index,
+				playerLast,
+				heuristic::euclidean,
+				10);
+
+			// Calculate new destination
+			bool bFirstPosition = true;
+			for (const auto& coord : path)
+			{
+				std::cout << coord.x << "," << coord.y << "\n";
+				if (bFirstPosition == true)
+				{
+					// Set a destination
+					i32vec2Destination = coord;
+					// Calculate the direction between enemy2D and this destination
+					i32vec2Direction = i32vec2Destination - vec2Index;
+					bFirstPosition = false;
+				}
+				else
+				{
+					if ((coord - i32vec2Destination) == i32vec2Direction)
+					{
+						// Set a destination
+						i32vec2Destination = coord;
+					}
+					else
+						break;
+				}
+			}
+			// Update the Enemy2D's position for attack
+			UpdatePosition();
+
+			if (vec2Index == playerLast)
+			{
+				sCurrentFSM = IDLE;
+				iFSMCounter = 0;
+				cout << "CHASE : Reset counter: " << iFSMCounter << endl;
+			}
+		}
+		
+
 	default:
 		break;
 	}

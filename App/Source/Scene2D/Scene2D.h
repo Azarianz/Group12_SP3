@@ -78,7 +78,7 @@ protected:
 	CPet2D* cPet2D;
 
 	// A vector containing the instance of CEnemy2Ds
-	vector<CEntity2D*> enemyVector;
+	CEnemy2D* cEnemy2D;
 
 	// Keyboard Controller singleton instance
 	CKeyboardController* cKeyboardController;
