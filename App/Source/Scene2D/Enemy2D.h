@@ -29,6 +29,9 @@ class CMap2D;
 // Include Player2D
 #include "Player2D.h"
 
+// Include Pet2D
+#include "Pet2D.h"
+
 class CEnemy2D : public CEntity2D
 {
 public:
@@ -132,6 +135,9 @@ protected:
 
 	// Handle to the CPlayer2D
 	CPlayer2D* cPlayer2D;
+
+	// Handle to the CPet2D
+	CPet2D* cPet2D;
 	
 	//Player initial spawn location
 	glm::vec2 playerStart = glm::vec2(2, 6);

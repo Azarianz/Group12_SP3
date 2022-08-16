@@ -145,6 +145,18 @@ bool CScene2D::Init(void)
 		}
 	}
 
+	// Create and initialise the CPet2D
+	cPet2D = CPet2D::GetInstance();
+	// Pass shader to cPlayer2D
+	cPet2D->SetShader("Shader2D_Colour");
+	// Initialise the instance
+	if (cPet2D->Init() == false)
+	{
+		cout << "Failed to load CPet2D" << endl;
+		return false;
+	}
+	cPet2D->SetPlayer2D(cPlayer2D);
+
 	// Store the keyboard controller singleton instance here
 	cKeyboardController = CKeyboardController::GetInstance();
 
@@ -184,6 +196,8 @@ bool CScene2D::Update(const double dElapsedTime)
 	{
 		enemyVector[i]->Update(dElapsedTime);
 	}
+
+	cPet2D->Update(dElapsedTime);
 
 	// Call the Map2D's update method
 	cMap2D->Update(dElapsedTime);
@@ -263,6 +277,13 @@ void CScene2D::Render(void)
 		// Call the CEnemy2D's PostRender()
 		enemyVector[i]->PostRender();
 	}
+
+	// Call the CPet2D's PreRender()
+	cPet2D->PreRender();
+	// Call the CPet2D's Render()
+	cPet2D->Render();
+	// Call the CPet2D's PostRender()
+	cPet2D->PostRender();
 
 	// Call the CPlayer2D's PreRender()
 	cPlayer2D->PreRender();

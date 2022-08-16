@@ -354,7 +354,7 @@ void CPlayer2D::Update(const double dElapsedTime)
 		}
 	}
 
-	if (cKeyboardController->IsKeyDown(GLFW_KEY_SPACE)) {
+	if (cKeyboardController->IsKeyDown(GLFW_KEY_X)) {
 
 		cInventoryItem = cInventoryManager->GetItem("Tree");
 		if(cInventoryItem->GetCount() > 0)

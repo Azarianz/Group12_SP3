@@ -28,8 +28,11 @@
 // Include CPlayer2D
 #include "Player2D.h"
 
-// Includ CEnemy2D
+// Include CEnemy2D
 #include "Enemy2D.h"
+
+// Include CPet2D
+#include "Pet2D.h"
 
 // Include vector
 #include <vector>
@@ -70,6 +73,9 @@ protected:
 	CMap2D* cMap2D;
 	// The handler containing the instance of CPlayer2Ds
 	CPlayer2D* cPlayer2D;
+
+	// The handler containing the instance CPet2D
+	CPet2D* cPet2D;
 
 	// A vector containing the instance of CEnemy2Ds
 	vector<CEntity2D*> enemyVector;

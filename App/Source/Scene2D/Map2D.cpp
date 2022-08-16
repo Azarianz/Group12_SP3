@@ -108,7 +108,7 @@ bool CMap2D::Init(const unsigned int uiNumLevels,
 	iTextureID = CImageLoader::GetInstance()->LoadTextureGetID("Image/Assets/wall.tga", true);
 	if (iTextureID == 0)
 	{
-		cout << "Image/Assets/wall.tga" << endl;
+		cout << "Unable to load Image/Assets/wall.tga" << endl;
 		return false;
 	}
 	else
