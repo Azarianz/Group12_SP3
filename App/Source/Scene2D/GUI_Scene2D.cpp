@@ -79,7 +79,7 @@ bool CGUI_Scene2D::Init(void)
 	// Initialise the cInventoryManager
 	cInventoryManager = CInventoryManager::GetInstance();
 	// Add a Tree as one of the inventory items
-	cInventoryItem = cInventoryManager->Add("Tree", "Image/Scene2D_TreeTile.tga", 128, 0);
+	cInventoryItem = cInventoryManager->Add("Tree", "Image/Scene2D_TreeTile.tga", 1, 0);
 	cInventoryItem->vec2Size = glm::vec2(25, 25);
 
 	// These variables are for IMGUI demo only
@@ -179,7 +179,7 @@ void CGUI_Scene2D::Update(const double dElapsedTime)
 	ImGui::SetWindowSize(ImVec2(200.0f * relativeScale_x, 25.0f * relativeScale_y));
 	ImGui::SameLine();
 	ImGui::SetWindowFontScale(1.5f * relativeScale_y);
-	ImGui::TextColored(ImVec4(1, 1, 0, 1), "Points: %d",
+	ImGui::TextColored(ImVec4(1, 1, 0, 1), "Flare: %d / %d",
 		cInventoryItem->GetCount(), cInventoryItem->GetMaxCount());
 	ImGui::End();
 	ImGui::PopStyleColor();

@@ -1,3 +1,1 @@
-﻿  SpriteAnimation.cpp
-D:\Work\GameDeveloping\NYP\Y2S1\SP3\SP3\Group12_SP3\Library\Source\Primitives\SpriteAnimation.cpp(75,62): warning C4244: 'argument': conversion from 'double' to 'const unsigned int', possible loss of data
-  Library.vcxproj -> D:\Work\GameDeveloping\NYP\Y2S1\SP3\SP3\Group12_SP3\Debug\Library.lib
+﻿  Library.vcxproj -> C:\Users\jacob\Documents\SP03\Group12_SP3\Debug\Library.lib

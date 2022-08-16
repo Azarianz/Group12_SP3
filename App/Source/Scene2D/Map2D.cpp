@@ -130,6 +130,18 @@ bool CMap2D::Init(const unsigned int uiNumLevels,
 		MapOfTextureIDs.insert(pair<int, int>(2, iTextureID));
 	}
 
+	iTextureID = CImageLoader::GetInstance()->LoadTextureGetID("Image/carrot.tga", true);
+	if (iTextureID == 0)
+	{
+		cout << "Unable to load Image/carrot.tga" << endl;
+		return false;
+	}
+	else
+	{
+		// Store the texture ID into MapOfTextureIDs
+		MapOfTextureIDs.insert(pair<int, int>(3, iTextureID));
+	}
+
 	// Load the spike texture
 	iTextureID = CImageLoader::GetInstance()->LoadTextureGetID("Image/Scene2D_Spikes.tga", true);
 	if (iTextureID == 0)

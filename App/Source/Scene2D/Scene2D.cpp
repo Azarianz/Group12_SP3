@@ -161,7 +161,11 @@ bool CScene2D::Init(void)
 	cSoundController->LoadSound(FileSystem::getPath("Sounds\\coin.ogg"), 1, true);
 	cSoundController->LoadSound(FileSystem::getPath("Sounds\\death.ogg"), 2, true);
 	cSoundController->LoadSound(FileSystem::getPath("Sounds\\done.ogg"), 3, true);
-	cSoundController->LoadSound(FileSystem::getPath("Sounds\\StageTheme.ogg"), 4, true);
+	cSoundController->LoadSound(FileSystem::getPath("Sounds\\BGM.ogg"), 4, true);
+	cSoundController->LoadSound(FileSystem::getPath("Sounds\\Ghast attk.ogg"), 5, true);
+	cSoundController->LoadSound(FileSystem::getPath("Sounds\\Ghast1.ogg"), 6, true);
+	cSoundController->LoadSound(FileSystem::getPath("Sounds\\ghast2.ogg"), 7, true);
+	cSoundController->LoadSound(FileSystem::getPath("Sounds\\GhastCry.ogg"), 8, true);
 
 	return true;
 }

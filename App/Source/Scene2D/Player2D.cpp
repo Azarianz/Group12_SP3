@@ -91,6 +91,8 @@ bool CPlayer2D::Init(void)
 	// By default, microsteps should be zero
 	vec2NumMicroSteps = glm::i32vec2(0, 0);
 
+	Flarecollected = false;
+
 	playerStart = vec2Index;
 
 	glGenVertexArrays(1, &VAO);
@@ -350,6 +352,17 @@ void CPlayer2D::Update(const double dElapsedTime)
 		default:
 			break;
 		}
+	}
+
+	if (cKeyboardController->IsKeyDown(GLFW_KEY_SPACE)) {
+
+		cInventoryItem = cInventoryManager->GetItem("Tree");
+		if(cInventoryItem->GetCount() > 0)
+		{
+			cMap2D->SetMapInfo(vec2Index.y, vec2Index.x, 3);
+			cInventoryItem->Remove(1);
+		}
+		Flarecollected = false;
 	}
 
 	// Update Jump or Fall
@@ -746,6 +759,8 @@ void CPlayer2D::InteractWithMap(void)
 		cInventoryItem = cInventoryManager->GetItem("Tree");
 		cInventoryItem->Add(1);
 
+		Flarecollected = true;
+
 		if (cSettings->MuteAudio == false)
 		{
 			cSoundController->StopPlayByID(1);
@@ -763,6 +778,7 @@ void CPlayer2D::InteractWithMap(void)
 				cSoundController->StopPlayByID(4);
 			}
 		}
+		
 		break;
 	case 10:
 		// Increase the lives by 1
