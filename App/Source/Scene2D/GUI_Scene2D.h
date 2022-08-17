@@ -62,8 +62,6 @@ public:
 	// PostRender
 	void PostRender(void);
 
-	void SetItemType(int type);
-
 	//Add Progress Bar
 	//void AddProgress
 
@@ -92,6 +90,4 @@ protected:
 	bool show_demo_window;
 	bool show_another_window;
 	ImVec4 clear_color;
-
-	int itemType;
 };

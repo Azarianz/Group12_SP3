@@ -168,6 +168,7 @@ bool CScene2D::Init(void)
 	cSoundController->LoadSound(FileSystem::getPath("Sounds\\Ghast1.ogg"), 6, true);
 	cSoundController->LoadSound(FileSystem::getPath("Sounds\\ghast2.ogg"), 7, true);
 	cSoundController->LoadSound(FileSystem::getPath("Sounds\\GhastCry.ogg"), 8, true);
+	cSoundController->LoadSound(FileSystem::getPath("Sounds\\GhastCry.ogg"), 9, true);
 
 	return true;
 }

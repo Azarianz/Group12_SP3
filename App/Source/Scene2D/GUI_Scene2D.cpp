@@ -78,13 +78,8 @@ bool CGUI_Scene2D::Init(void)
 
 	// Initialise the cInventoryManager
 	cInventoryManager = CInventoryManager::GetInstance();
-	cInventoryItem = cInventoryManager->Add("Item", "Image/empty.tga", 1, 0);
-	cInventoryItem->vec2Size = glm::vec2(25, 25);
-	// dummy flare 
-	cInventoryItem = cInventoryManager->Add("Item2", "Image/Flare.tga", 1, 0);
-	cInventoryItem->vec2Size = glm::vec2(25, 25);
-	// dummy cereal
-	cInventoryItem = cInventoryManager->Add("Item3", "Image/Cornflakes.tga", 1, 0);
+	// Add a Tree as one of the inventory items
+	cInventoryItem = cInventoryManager->Add("Tree", "Image/Scene2D_TreeTile.tga", 1, 0);
 	cInventoryItem->vec2Size = glm::vec2(25, 25);
 
 	// These variables are for IMGUI demo only
@@ -171,10 +166,8 @@ void CGUI_Scene2D::Update(const double dElapsedTime)
 	ImGui::End();
 
 	// Render the inventory items
-	//cInventoryItem = cInventoryManager->GetItem("Item");
-
-
-	ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(0.0f, 0.0f, 0.0f, 1.0f));  // Set a background color
+	cInventoryItem = cInventoryManager->GetItem("Tree");
+	ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(0.0f, 0.0f, 1.0f, 1.0f));  // Set a background color
 	ImGuiWindowFlags inventoryWindowFlags = ImGuiWindowFlags_AlwaysAutoResize |
 		ImGuiWindowFlags_NoTitleBar |
 		ImGuiWindowFlags_NoMove |
@@ -184,16 +177,10 @@ void CGUI_Scene2D::Update(const double dElapsedTime)
 	ImGui::Begin("Image", NULL, inventoryWindowFlags);
 	ImGui::SetWindowPos(ImVec2(cSettings->iWindowWidth * 0.03f, cSettings->iWindowHeight * 0.9f));
 	ImGui::SetWindowSize(ImVec2(200.0f * relativeScale_x, 25.0f * relativeScale_y));
-	if (itemType == 1)
-		cInventoryItem = cInventoryManager->GetItem("Item2");
-	else if (itemType == 2)
-		cInventoryItem = cInventoryManager->GetItem("Item3");
-	else
-		cInventoryItem = cInventoryManager->GetItem("Item");
-	ImGui::Image((void*)(intptr_t)cInventoryItem->GetTextureID(),
-		ImVec2(cInventoryItem->vec2Size.x * relativeScale_x,
-			cInventoryItem->vec2Size.y * relativeScale_y),
-		ImVec2(0, 1), ImVec2(1, 0));
+	ImGui::SameLine();
+	ImGui::SetWindowFontScale(1.5f * relativeScale_y);
+	ImGui::TextColored(ImVec4(1, 1, 0, 1), "Flare: %d / %d",
+		cInventoryItem->GetCount(), cInventoryItem->GetMaxCount());
 	ImGui::End();
 	ImGui::PopStyleColor();
 
@@ -223,9 +210,4 @@ void CGUI_Scene2D::Render(void)
  */
 void CGUI_Scene2D::PostRender(void)
 {
-}
-
-void CGUI_Scene2D::SetItemType(int type)
-{
-	itemType = type;
 }
