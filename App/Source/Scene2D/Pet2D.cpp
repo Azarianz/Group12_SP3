@@ -156,6 +156,12 @@ void CPet2D::Update(const double dElapsedTime)
 	if (cKeyboardController->IsKeyReleased(GLFW_KEY_SPACE))
 	{
 		sCurrentFSM = FOLLOW;
+
+		if (cSettings->MuteAudio == false)
+		{
+			//Play Sound
+			cSoundController->PlaySoundByID(9);
+		}
 	}
 
 	switch (sCurrentFSM)

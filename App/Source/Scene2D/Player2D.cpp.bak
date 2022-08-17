@@ -382,7 +382,8 @@ void CPlayer2D::Update(const double dElapsedTime)
 				CGUI_Scene2D::GetInstance()->SetItemType(0);
 			}
 		}
-		flareCollected = false;
+		Flarecollected = false;
+
 	}
 
 	// Update Jump or Fall

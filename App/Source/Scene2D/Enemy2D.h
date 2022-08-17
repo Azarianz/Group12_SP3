@@ -153,6 +153,8 @@ protected:
 	// InventoryManager
 	CInventoryManager* cInventoryManager;
 
+	CSoundController* cSoundController;
+
 	// Current FSM
 	FSM sCurrentFSM;
 

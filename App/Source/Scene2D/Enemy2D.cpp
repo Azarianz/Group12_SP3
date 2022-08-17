@@ -25,6 +25,9 @@ using namespace std;
 // Include math.h
 #include <math.h>
 
+// Include soundcontroller
+#include "../SoundController/SoundController.h"
+
 /**
  @brief Constructor This constructor has protected access modifier as this class will be a Singleton
  */
@@ -142,6 +145,8 @@ void CEnemy2D::Update(const double dElapsedTime)
 	{
 		sCurrentFSM = HUNTING;
 		playerLast = cPlayer2D->vec2Index;
+
+
 	}
 
 	if (!bIsActive)
@@ -150,11 +155,17 @@ void CEnemy2D::Update(const double dElapsedTime)
 	switch (sCurrentFSM)
 	{
 	case IDLE:
+		
 		if (iFSMCounter > iMaxFSMCounter)
 		{
 			sCurrentFSM = PATROL;
 			iFSMCounter = 0;
 			cout << "Switching to Patrol State" << endl;
+			if (cSettings->MuteAudio == false)
+			{
+				//Play Sound
+				cSoundController->PlaySoundByID(9);
+			}
 		}
 		iFSMCounter++;
 		break;
