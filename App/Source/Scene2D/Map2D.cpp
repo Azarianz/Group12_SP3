@@ -118,7 +118,7 @@ bool CMap2D::Init(const unsigned int uiNumLevels,
 	}
 
 	// Load the tree texture
-	iTextureID = CImageLoader::GetInstance()->LoadTextureGetID("Image/carrot.tga", true);
+	iTextureID = CImageLoader::GetInstance()->LoadTextureGetID("Image/Flare.tga", true);
 	if (iTextureID == 0)
 	{
 		cout << "Unable to load Image/carrot.tga" << endl;
@@ -130,7 +130,7 @@ bool CMap2D::Init(const unsigned int uiNumLevels,
 		MapOfTextureIDs.insert(pair<int, int>(2, iTextureID));
 	}
 
-	iTextureID = CImageLoader::GetInstance()->LoadTextureGetID("Image/carrot.tga", true);
+	iTextureID = CImageLoader::GetInstance()->LoadTextureGetID("Image/Flare.tga", true);
 	if (iTextureID == 0)
 	{
 		cout << "Unable to load Image/carrot.tga" << endl;
@@ -140,6 +140,30 @@ bool CMap2D::Init(const unsigned int uiNumLevels,
 	{
 		// Store the texture ID into MapOfTextureIDs
 		MapOfTextureIDs.insert(pair<int, int>(3, iTextureID));
+	}
+
+	iTextureID = CImageLoader::GetInstance()->LoadTextureGetID("Image/Cornflakes.tga", true);
+	if (iTextureID == 0)
+	{
+		cout << "Unable to load Image/carrot.tga" << endl;
+		return false;
+	}
+	else
+	{
+		// Store the texture ID into MapOfTextureIDs
+		MapOfTextureIDs.insert(pair<int, int>(4, iTextureID));
+	}
+
+	iTextureID = CImageLoader::GetInstance()->LoadTextureGetID("Image/Cornflakes.tga", true);
+	if (iTextureID == 0)
+	{
+		cout << "Unable to load Image/carrot.tga" << endl;
+		return false;
+	}
+	else
+	{
+		// Store the texture ID into MapOfTextureIDs
+		MapOfTextureIDs.insert(pair<int, int>(5, iTextureID));
 	}
 
 	// Load the spike texture

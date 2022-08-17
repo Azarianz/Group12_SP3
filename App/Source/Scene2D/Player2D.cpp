@@ -91,7 +91,7 @@ bool CPlayer2D::Init(void)
 	// By default, microsteps should be zero
 	vec2NumMicroSteps = glm::i32vec2(0, 0);
 
-	Flarecollected = false;
+	itemCollected = flareCollected = cerealCollected = false;
 
 	playerStart = vec2Index;
 
@@ -354,15 +354,34 @@ void CPlayer2D::Update(const double dElapsedTime)
 		}
 	}
 
-	if (cKeyboardController->IsKeyDown(GLFW_KEY_X)) {
-
-		cInventoryItem = cInventoryManager->GetItem("Tree");
-		if(cInventoryItem->GetCount() > 0)
+	if (cKeyboardController->IsKeyDown(GLFW_KEY_F)) {
+		if (flareCollected)
 		{
-			cMap2D->SetMapInfo(vec2Index.y, vec2Index.x, 3);
-			cInventoryItem->Remove(1);
+			cInventoryItem = cInventoryManager->GetItem("Item");
+			if (cInventoryItem->GetCount() > 0 && cMap2D->GetMapInfo(vec2Index.y, vec2Index.x) == 0)
+			{
+				cMap2D->SetMapInfo(vec2Index.y, vec2Index.x, 3);
+				cInventoryItem->Remove(1);
+				itemCollected = false;
+				flareCollected = false;
+				CGUI_Scene2D::GetInstance()->SetItemType(0);
+			}
 		}
-		Flarecollected = false;
+	}
+
+	if (cKeyboardController->IsKeyPressed(GLFW_KEY_C)) {
+		if (cerealCollected)
+		{
+			cInventoryItem = cInventoryManager->GetItem("Item");
+			if (cInventoryItem->GetCount() > 0 && cMap2D->GetMapInfo(vec2Index.y, vec2Index.x) == 0)
+			{
+				cMap2D->SetMapInfo(vec2Index.y, vec2Index.x, 5);
+				cInventoryItem->Remove(1);
+				itemCollected = false;
+				cerealCollected = false;
+				CGUI_Scene2D::GetInstance()->SetItemType(0);
+			}
+		}
 	}
 
 	// Update Jump or Fall
@@ -754,31 +773,60 @@ void CPlayer2D::InteractWithMap(void)
 	switch (cMap2D->GetMapInfo(vec2Index.y, vec2Index.x))
 	{
 	case 2:
-		// Erase the tree from this position
-		cMap2D->SetMapInfo(vec2Index.y, vec2Index.x, 0);
-		cInventoryItem = cInventoryManager->GetItem("Tree");
-		cInventoryItem->Add(1);
-
-		Flarecollected = true;
-
-		if (cSettings->MuteAudio == false)
+		if (!itemCollected)
 		{
-			cSoundController->StopPlayByID(1);
-			// Play a bell sound 
-			cSoundController->PlaySoundByID(1);
-		}
-
-		// Check if there is no lives left...
-		if (cInventoryItem->GetCount() >= 127)
-		{
-			//Player loses the game
-			CGameManager::GetInstance()->bPlayerWon = true;
+			// Erase the flare from this position
+			cMap2D->SetMapInfo(vec2Index.y, vec2Index.x, 0);
+			cInventoryItem = cInventoryManager->GetItem("Item");
+			cInventoryItem->Add(1);
+			flareCollected = true;
+			itemCollected = true;
+			CGUI_Scene2D::GetInstance()->SetItemType(1);
 			if (cSettings->MuteAudio == false)
 			{
-				cSoundController->StopPlayByID(4);
+				cSoundController->StopPlayByID(1);
+				// Play a bell sound 
+				cSoundController->PlaySoundByID(1);
+			}
+			// Check if there is no lives left...
+			if (cInventoryItem->GetCount() >= 127)
+			{
+				//Player loses the game
+				CGameManager::GetInstance()->bPlayerWon = true;
+				if (cSettings->MuteAudio == false)
+				{
+					cSoundController->StopPlayByID(4);
+				}
 			}
 		}
-		
+		break;
+	case 4:
+		if (!itemCollected)
+		{
+			// Erase the cereal from this position
+			cMap2D->SetMapInfo(vec2Index.y, vec2Index.x, 0);
+			cInventoryItem = cInventoryManager->GetItem("Item");
+			cInventoryItem->Add(1);
+			cerealCollected = true;
+			itemCollected = true;
+			CGUI_Scene2D::GetInstance()->SetItemType(2);
+			if (cSettings->MuteAudio == false)
+			{
+				cSoundController->StopPlayByID(1);
+				// Play a bell sound 
+				cSoundController->PlaySoundByID(1);
+			}
+			// Check if there is no lives left...
+			if (cInventoryItem->GetCount() >= 127)
+			{
+				//Player loses the game
+				CGameManager::GetInstance()->bPlayerWon = true;
+				if (cSettings->MuteAudio == false)
+				{
+					cSoundController->StopPlayByID(4);
+				}
+			}
+		}
 		break;
 	case 10:
 		// Increase the lives by 1

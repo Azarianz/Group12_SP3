@@ -105,7 +105,7 @@ protected:
 	int iJumpCount;
 	int dirFacing = 1;
 	float playerSpeed = 1;
-	bool Flarecollected;
+	bool flareCollected, cerealCollected, itemCollected;
 
 	// Constructor
 	CPlayer2D(void);
