@@ -150,6 +150,9 @@ protected:
 	// Keyboard Controller singleton instance
 	CKeyboardController* cKeyboardController;
 
+	// SoundController Handler
+	CSoundController* cSoundController;
+
 	// FSM counter - count how many frames it has been in this FSM
 	int iFSMCounter;
 
@@ -169,7 +172,7 @@ protected:
 	void UpdateJumpFall(const double dElapsedTime = 0.0166666666666667);
 
 	// Let pet2D interact with the enemy
-	bool InteractWithMap(void);
+	void InteractWithMap(void);
 
 	// Update direction
 	void UpdateDirection(void);

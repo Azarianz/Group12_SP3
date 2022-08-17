@@ -295,8 +295,6 @@ void CEnemy2D::Update(const double dElapsedTime)
 				cout << "CHASE : Reset counter: " << iFSMCounter << endl;
 			}
 		}
-		
-
 	default:
 		break;
 	}

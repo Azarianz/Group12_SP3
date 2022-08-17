@@ -25,6 +25,12 @@ using namespace std;
 // Include math.h
 #include <math.h>
 
+// Include gamemanager.h
+#include "GameManager.h"
+
+// Include soundcontroller
+#include "../SoundController/SoundController.h"
+
 /**
  @brief Constructor This constructor has protected access modifier as this class will be a Singleton
  */
@@ -81,6 +87,9 @@ CPet2D::~CPet2D(void)
   */
 bool CPet2D::Init(void)
 {
+	// Get the handler to hte soundcontroller
+	cSoundController = CSoundController::GetInstance();
+
 	// Store the keyboard controller singleton instance here
 	cKeyboardController = CKeyboardController::GetInstance();
 	// Reset all keys since we are starting a new game
@@ -598,37 +607,23 @@ void CPet2D::UpdateJumpFall(const double dElapsedTime)
 /**
  @brief Let enemy2D interact with the player.
  */
-bool CPet2D::InteractWithMap(void)
+void CPet2D::InteractWithMap(void)
 {
 	glm::vec2 i32vec2PlayerPos = cPlayer2D->vec2Index;
 
-	// Check if the enemy2D is within 1.5 indices of the player2D
-	if (((vec2Index.x >= i32vec2PlayerPos.x - 0.5) &&
-		(vec2Index.x <= i32vec2PlayerPos.x + 0.5))
-		&&
-		((vec2Index.y >= i32vec2PlayerPos.y - 0.5) &&
-			(vec2Index.y <= i32vec2PlayerPos.y + 0.5)))
+	switch (cMap2D->GetMapInfo(vec2Index.y, vec2Index.x))
 	{
-		cout << "Gotcha!" << endl;
-		// Remove health by 1 (Spa)
-		CInventoryItem* cInventoryItem = cInventoryManager->GetItem("Lives");
-		cInventoryItem->Remove(1);
-		cPlayer2D->vec2Index = playerStart;
-
-		// Since the player has been caught, then reset the FSM
-		sCurrentFSM = IDLE;
-		iFSMCounter = 0;
-
+	case 99:
+		//Player loses the game
+		CGameManager::GetInstance()->bPlayerWon = true;
 		if (cSettings->MuteAudio == false)
 		{
-			//Play Sound
-			CSoundController::GetInstance()->PlaySoundByID(2);
+			cSoundController->StopPlayByID(4);
 		}
-
-		return true;
+		break;
+	default:
+		break;
 	}
-
-	return false;
 }
 
 /**
@@ -731,7 +726,7 @@ void CPet2D::UpdatePosition(void)
 		}
 
 		// Interact with the Player
-		//InteractWithMap();
+		InteractWithMap();
 	}
 	else if (i32vec2Direction.x > 0)
 	{
@@ -760,7 +755,7 @@ void CPet2D::UpdatePosition(void)
 		}
 
 		// Interact with the Player
-		//InteractWithMap();
+		InteractWithMap();
 	}
 	if (i32vec2Direction.y < 0)
 	{
@@ -788,7 +783,7 @@ void CPet2D::UpdatePosition(void)
 		}
 
 		// Interact with the Player
-		//InteractWithMap();
+		InteractWithMap();
 	}
 	else if (i32vec2Direction.y > 0)
 	{
@@ -817,7 +812,7 @@ void CPet2D::UpdatePosition(void)
 		}
 
 		// Interact with the Player
-		//InteractWithMap();
+		InteractWithMap();
 	}
 
 

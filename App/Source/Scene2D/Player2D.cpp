@@ -130,7 +130,7 @@ bool CPlayer2D::Init(void)
 	// Get the handler to the CInventoryManager instance
 	cInventoryManager = CInventoryManager::GetInstance();
 	// Add a Lives icon as one of the inventory items 
-	cInventoryItem = cInventoryManager->Add("Lives", "Image/Scene2D_Lives.tga", 3, 3);
+	cInventoryItem = cInventoryManager->Add("Lives", "Image/Scene2D_Lives.tga", 1, 1);
 	cInventoryItem->vec2Size = glm::vec2(25, 25);
 
 	//Add a Health icon as one of the inventory items 
@@ -728,7 +728,7 @@ void CPlayer2D::UpdateHealthLives(void)
 	cInventoryItem = cInventoryManager->GetItem("Lives");
 
 
-	if (cInventoryItem->GetCount() < 3)
+	if (cInventoryItem->GetCount() < 1)
 	{
 		// Check if all life is lost
 		if (cInventoryItem->GetCount() <= 0)
@@ -797,9 +797,6 @@ void CPlayer2D::InteractWithMap(void)
 		cInventoryItem = cInventoryManager->GetItem("Health");
 		cInventoryItem->Add(1);
 		break;
-	case 99:
-		// Level has been completed
-		CGameManager::GetInstance()->bLevelCompleted = true;
 	case 300:
 		// Remove health by 1 (Spa)
 		cInventoryItem = cInventoryManager->GetItem("Lives");
