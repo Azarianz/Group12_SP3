@@ -102,6 +102,9 @@ bool CScene2D::Init(void)
 		return false;
 	}
 
+	srand(time(NULL));
+	RandomSpawns();
+
 	// Load Scene2DColour into ShaderManager
 	CShaderManager::GetInstance()->Use("Shader2D_Colour");
 	//CShaderManager::GetInstance()->activeShader->setInt("texture1", 0);
@@ -162,6 +165,7 @@ bool CScene2D::Init(void)
 	cSoundController->LoadSound(FileSystem::getPath("Sounds\\ghast2.ogg"), 7, true);
 	cSoundController->LoadSound(FileSystem::getPath("Sounds\\GhastCry.ogg"), 8, true);
 	cSoundController->LoadSound(FileSystem::getPath("Sounds\\Whristle.ogg"), 9, true);
+
 
 	return true;
 }
@@ -284,6 +288,117 @@ void CScene2D::Render(void)
 	// Call the cGUI_Scene2D's PostRender()
 	cGUI_Scene2D->PostRender();
 }
+
+
+void CScene2D::RandomSpawns(void)
+{
+	unsigned int PlayerSpawn;	// 4 different locations
+	unsigned int WinZone;	// 4 different locations
+	unsigned int DogSpawn;	// 6 different locations
+	unsigned int FlareSpawn;	// 2 different locations
+	//unsigned int HiFreqWhistleSpawn;	// 2 different locations
+	unsigned int CerealSpawn[2] = {};	// 4 different locations
+
+
+	// set player's spawn at 1 of 4 random locations
+	PlayerSpawn = rand() % 4;
+
+	// set win-zone at 1 of 4 random locations
+	WinZone = rand() % 4;
+	// if the win-zone and player spawn are in similar
+	// location, randomise again until they are diff
+	while (WinZone == PlayerSpawn)
+	{
+		WinZone = rand() % 4;
+		cout << "winzone changed" << endl;
+	}
+
+	// set dog's spawn at 1 of 4 random locations
+	DogSpawn = rand() % 6;
+	// make sure the dog's spawn does not overlap
+	// with the other 2 spawns
+	while ((DogSpawn == PlayerSpawn) || (DogSpawn == WinZone))
+	{
+		DogSpawn = rand() % 4;
+		cout << "dog changed" << endl;
+	}
+
+	// set flare's spawn at 1 of 2 random locations
+	FlareSpawn = rand() % 2;
+
+	// set hi-freq whistle's spawn at 1 of 2 random locations
+	//HiFreqWhistle = rand() % 2;
+
+	CerealSpawn[0] = rand() % 4;
+	CerealSpawn[1] = rand() % 4;
+	while (CerealSpawn[0] == CerealSpawn[1])
+	{
+		CerealSpawn[1] = rand() % 4;
+		cout << "CS1 changed" << endl;
+	}
+
+	switch (PlayerSpawn)
+	{
+	case 0:
+		cMap2D->SetMapInfo(26, 4, 200);
+		break;
+	case 1:
+		cMap2D->SetMapInfo(4, 4, 200);
+		break;
+	case 2:
+		cMap2D->SetMapInfo(4, 36, 200);
+		break;
+	case 3:
+		cMap2D->SetMapInfo(26, 36, 200);
+		break;
+	default:
+		cout << "Player is not spawned" << endl;
+		break;
+	}
+
+	switch (WinZone)
+	{
+	case 0:
+		cMap2D->SetMapInfo(23, 13, 99);
+		cMap2D->SetMapInfo(22, 13, 99);
+		cMap2D->SetMapInfo(22, 12, 99);
+		cMap2D->SetMapInfo(23, 12, 99);
+		break;
+	case 1:
+		cMap2D->SetMapInfo(7, 4, 99);
+		cMap2D->SetMapInfo(6, 4, 99);
+		cMap2D->SetMapInfo(6, 3, 99);
+		cMap2D->SetMapInfo(7, 3, 99);
+		break;
+	case 2:
+		cMap2D->SetMapInfo(4, 30, 99);
+		cMap2D->SetMapInfo(3, 30, 99);
+		cMap2D->SetMapInfo(3, 29, 99);
+		cMap2D->SetMapInfo(4, 29, 99);
+		break;
+	case 3:
+		cMap2D->SetMapInfo(19, 33, 99);
+		cMap2D->SetMapInfo(20, 33, 99);
+		cMap2D->SetMapInfo(20, 32, 99);
+		cMap2D->SetMapInfo(19, 32, 99);
+		break;
+	default:
+		cout << "Player is not spawned" << endl;
+		break;
+	}
+
+	cout << endl
+		<< "PS: " << PlayerSpawn << endl
+		<< "WZ: " << WinZone << endl
+		<< "DS: " << DogSpawn << endl
+		<< "FS: " << FlareSpawn << endl
+		<< "CS0: " << CerealSpawn[0] << endl
+		<< "CS1: " << CerealSpawn[1] << endl
+		<< endl;
+
+	return;
+}
+
 
 /**
  @brief PostRender Set up the OpenGL display environment after rendering.

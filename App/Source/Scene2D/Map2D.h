@@ -113,6 +113,10 @@ public:
 	// Get current level
 	unsigned int GetCurrentLevel(void) const;
 
+	// Randomly set the player spawn, dog spawn, win-zone spawn, 
+	// cereal spawn, hi-freq whistle spawn, flare spawn 
+	void RandomSpawns(void);
+
 	// For AStar PathFinding
 	std::vector<glm::vec2> PathFind( const glm::vec2& startPos, 
 										const glm::vec2& targetPos, 

@@ -95,6 +95,8 @@ protected:
 	// Handler to the SoundController
 	CSoundController* cSoundController;
 
+	void RandomSpawns(void);
+
 	// Constructor
 	CScene2D(void);
 	// Destructor
