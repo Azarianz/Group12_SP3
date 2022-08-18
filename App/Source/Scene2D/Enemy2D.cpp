@@ -143,11 +143,15 @@ bool CEnemy2D::Init(void)
  */
 void CEnemy2D::Update(const double dElapsedTime)
 {
-	unsigned int uiRow = -1;
-	unsigned int uiCol = -1;
-	if (cMap2D->FindValue(3, uiRow, uiCol)) {
-		sCurrentFSM = FLAREFLLW;
-		cout << "Fllwing Flare :3"<<endl;
+	if (sCurrentFSM != FLAREFLLW)
+	{
+		unsigned int uiRow = -1;
+		unsigned int uiCol = -1;
+		if (cMap2D->FindValue(3, uiRow, uiCol)) {
+			sCurrentFSM = FLAREFLLW;
+			flareOldIndex = cPlayer2D->flareIndex;
+			cout << "Fllwing Flare :3" << endl;
+		}
 	}
 
 	if (cKeyboardController->IsKeyReleased(GLFW_KEY_SPACE))
@@ -336,7 +340,7 @@ void CEnemy2D::Update(const double dElapsedTime)
 
 			cout << "Switching to Enemy::PATROL State" << endl;
 		}
-		else if (cPhysics2D.CalculateDistance(vec2Index, cPlayer2D->flareIndex) < 6.0f)
+		else if (cPhysics2D.CalculateDistance(vec2Index, cPlayer2D->flareIndex) > 1.0f)
 		{
 			auto path = cMap2D->PathFind(vec2Index,
 				cPlayer2D->flareIndex,
@@ -353,17 +357,17 @@ void CEnemy2D::Update(const double dElapsedTime)
 				if (bFirstPosition == true)
 				{
 					// Set a destination
-					cPlayer2D->flareIndex = coord;
+					flareOldIndex = coord;
 					// Calculate the direction between enemy2D and this destination
-					i32vec2Direction = cPlayer2D->flareIndex - vec2Index;
+					i32vec2Direction = flareOldIndex - vec2Index;
 					bFirstPosition = false;
 				}
 				else
 				{
-					if ((coord - cPlayer2D->flareIndex) == i32vec2Direction)
+					if ((coord - flareOldIndex) == i32vec2Direction)
 					{
 						// Set a destination
-						cPlayer2D->flareIndex = coord;
+						flareOldIndex = coord;
 					}
 					else
 						break;
