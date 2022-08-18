@@ -76,6 +76,8 @@ public:
 	bool Init(	const unsigned int uiNumLevels = 1,
 				const unsigned int uiNumRows = 24,
 				const unsigned int uiNumCols = 32);
+				const unsigned int uiNumRows = 30,
+				const unsigned int uiNumCols = 40);
 
 	// Update
 	void Update(const double dElapsedTime);
