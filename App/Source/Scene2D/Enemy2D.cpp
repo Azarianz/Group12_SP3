@@ -90,6 +90,8 @@ bool CEnemy2D::Init(void)
 	// Get the handler to the CSettings instance
 	cSettings = CSettings::GetInstance();
 
+	cSoundController = CSoundController::GetInstance();
+
 	// Get the handler to the CMap2D instance
 	cMap2D = CMap2D::GetInstance();
 	// Find the indices for the player in arrMapInfo, and assign it to cPlayer2D
@@ -155,21 +157,26 @@ void CEnemy2D::Update(const double dElapsedTime)
 	switch (sCurrentFSM)
 	{
 	case IDLE:
-		
+		if (cSettings->MuteAudio == false)
+		{
+			//Play Sound
+			cSoundController->PlaySoundByID(6);
+		}
 		if (iFSMCounter > iMaxFSMCounter)
 		{
 			sCurrentFSM = PATROL;
 			iFSMCounter = 0;
 			cout << "Switching to Patrol State" << endl;
-			if (cSettings->MuteAudio == false)
-			{
-				//Play Sound
-				cSoundController->PlaySoundByID(9);
-			}
+
 		}
 		iFSMCounter++;
 		break;
 	case PATROL:
+		if (cSettings->MuteAudio == false)
+		{
+			//Play Sound
+			cSoundController->PlaySoundByID(7);
+		}	
 		if (iFSMCounter > iMaxFSMCounter)
 		{
 			sCurrentFSM = IDLE;

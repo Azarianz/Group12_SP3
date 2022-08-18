@@ -74,8 +74,6 @@ class CMap2D : public CSingletonTemplate<CMap2D>, public CEntity2D
 public:
 	// Init
 	bool Init(	const unsigned int uiNumLevels = 1,
-				const unsigned int uiNumRows = 24,
-				const unsigned int uiNumCols = 32);
 				const unsigned int uiNumRows = 30,
 				const unsigned int uiNumCols = 40);
 

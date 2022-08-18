@@ -90,7 +90,6 @@ bool CScene2D::Init(void)
 	cMap2D->SetShader("Shader2D");
 	// Load the map into an array
 	// Initialise the instance
-	if (cMap2D->Init(2, 24, 32) == false)
 	if (cMap2D->Init(2, 30, 40) == false)
 	{
 		cout << "Failed to load CMap2D" << endl;
