@@ -129,7 +129,7 @@ bool CPet2D::Init(void)
 	}
 
 	//CS: Init the color to white
-	runtimeColour = glm::vec4(1.0, 0.0, .0, 1.0);
+	runtimeColour = glm::vec4(1.0, 0.6, 0.0, 1.0);
 
 	// Set the Physics to fall status by default
 	cPhysics2D.Init();
@@ -152,7 +152,6 @@ void CPet2D::Update(const double dElapsedTime)
 	if (!bIsActive)
 		return;
 
-
 	if (cKeyboardController->IsKeyReleased(GLFW_KEY_SPACE))
 	{
 		sCurrentFSM = FOLLOW;
@@ -168,7 +167,7 @@ void CPet2D::Update(const double dElapsedTime)
 	{
 	case IDLE:
 		iFSMCounter = 0;
-		cout << "Switching to IDLE State" << endl;
+		cout << "Switching to Pet::IDLE State" << endl;
 		break;
 	case FOLLOW:
 		if (iFSMCounter > iMaxFSMCounter)
@@ -213,6 +212,7 @@ void CPet2D::Update(const double dElapsedTime)
 
 			// Update the Enemy2D's position for attack
 			UpdatePosition();
+			cout << "Switching to Pet::FOLLOW State" << endl;
 		}
 
 		iFSMCounter++;

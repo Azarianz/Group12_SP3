@@ -147,8 +147,6 @@ void CEnemy2D::Update(const double dElapsedTime)
 	{
 		sCurrentFSM = HUNTING;
 		playerLast = cPlayer2D->vec2Index;
-
-
 	}
 
 	if (!bIsActive)
@@ -157,31 +155,30 @@ void CEnemy2D::Update(const double dElapsedTime)
 	switch (sCurrentFSM)
 	{
 	case IDLE:
-		if (cSettings->MuteAudio == false)
-		{
-			//Play Sound
-			cSoundController->PlaySoundByID(6);
-		}
+		//if (cSettings->MuteAudio == false)
+		//{
+		//	//Play Sound
+		//	cSoundController->PlaySoundByID(6);
+		//}
 		if (iFSMCounter > iMaxFSMCounter)
 		{
 			sCurrentFSM = PATROL;
 			iFSMCounter = 0;
-			cout << "Switching to Patrol State" << endl;
-
+			cout << "Switching to Enemy::PATROL State" << endl;
 		}
 		iFSMCounter++;
 		break;
 	case PATROL:
-		if (cSettings->MuteAudio == false)
-		{
-			//Play Sound
-			cSoundController->PlaySoundByID(7);
-		}	
+		//if (cSettings->MuteAudio == false)
+		//{
+		//	//Play Sound
+		//	cSoundController->PlaySoundByID(7);
+		//}	
 		if (iFSMCounter > iMaxFSMCounter)
 		{
 			sCurrentFSM = IDLE;
 			iFSMCounter = 0;
-			cout << "Switching to Idle State" << endl;
+			cout << "Switching to Enemy::IDLE State" << endl;
 		}
 		else if (cPhysics2D.CalculateDistance(vec2Index, cPlayer2D->vec2Index) < 6.0f)
 		{
@@ -268,7 +265,7 @@ void CEnemy2D::Update(const double dElapsedTime)
 			{
 				sCurrentFSM = CHASE;
 				iFSMCounter = 0;
-				cout << "Switching to CHASE State" << endl;
+				cout << "Switching to Enemy::CHASE State" << endl;
 			}
 
 			iFSMCounter = 0;
@@ -313,12 +310,24 @@ void CEnemy2D::Update(const double dElapsedTime)
 				cout << "CHASE : Reset counter: " << iFSMCounter << endl;
 			}
 		}
+	case STUNNED:
+		if (iFSMCounter > stunnedCounter)
+		{
+			sCurrentFSM = PATROL;
+			iFSMCounter = 0;
+			cout << "Switching to Enemy::PATROL State" << endl;
+
+		}
+		iFSMCounter++;
+		break;
 	default:
 		break;
 	}
 
 	// Update Jump or Fall
 	//UpdateJumpFall(dElapsedTime);
+
+	InteractWithMap();
 
 	// Update the UV Coordinates
 	vec2UVCoordinate.x = cSettings->ConvertIndexToUVSpace(cSettings->x, vec2Index.x, false, i32vec2NumMicroSteps.x * cSettings->MICRO_STEP_XAXIS);
@@ -810,6 +819,33 @@ void CEnemy2D::FlipRandomDirection(void)
 
 }
 
+void CEnemy2D::InteractWithMap(void)
+{
+	switch (cMap2D->GetMapInfo(vec2Index.y, vec2Index.x))
+	{
+	case 3: // Flare Dropped
+		// Erase the flare from this position
+		cMap2D->SetMapInfo(vec2Index.y, vec2Index.x, 0);
+		break;
+	case 5: // Cereal Dropped
+		// Erase the cereal from this position
+		cMap2D->SetMapInfo(vec2Index.y, vec2Index.x, 0);
+		// Insert Stun Code Here
+		sCurrentFSM = STUNNED;
+		cout << "Switching to Enemy::STUNNED State" << endl;
+
+		if (cSettings->MuteAudio == false)
+		{
+			cSoundController->StopPlayByID(1);
+			// Play a bell sound 
+			cSoundController->PlaySoundByID(1);
+		}
+		break;
+	default:
+		break;
+	}
+}
+
 /**
 @brief Update position.
 */
@@ -932,6 +968,7 @@ void CEnemy2D::UpdatePosition(void)
 
 		// Interact with the Player
 		InteractWithPlayer();
+
 	}
 
 

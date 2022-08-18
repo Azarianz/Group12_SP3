@@ -789,16 +789,6 @@ void CPlayer2D::InteractWithMap(void)
 				// Play a bell sound 
 				cSoundController->PlaySoundByID(1);
 			}
-			// Check if there is no lives left...
-			if (cInventoryItem->GetCount() >= 127)
-			{
-				//Player loses the game
-				CGameManager::GetInstance()->bPlayerWon = true;
-				if (cSettings->MuteAudio == false)
-				{
-					cSoundController->StopPlayByID(4);
-				}
-			}
 		}
 		break;
 	case 4:
@@ -816,16 +806,6 @@ void CPlayer2D::InteractWithMap(void)
 				cSoundController->StopPlayByID(1);
 				// Play a bell sound 
 				cSoundController->PlaySoundByID(1);
-			}
-			// Check if there is no lives left...
-			if (cInventoryItem->GetCount() >= 127)
-			{
-				//Player loses the game
-				CGameManager::GetInstance()->bPlayerWon = true;
-				if (cSettings->MuteAudio == false)
-				{
-					cSoundController->StopPlayByID(4);
-				}
 			}
 		}
 		break;

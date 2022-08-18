@@ -148,7 +148,7 @@ void CGUI_Scene2D::Update(const double dElapsedTime)
 	//ImGui::End();
 
 	// Render the Lives 
-	ImGuiWindowFlags livesWindowFlags = ImGuiWindowFlags_AlwaysAutoResize |
+	/*ImGuiWindowFlags livesWindowFlags = ImGuiWindowFlags_AlwaysAutoResize |
 		ImGuiWindowFlags_NoBackground |
 		ImGuiWindowFlags_NoTitleBar |
 		ImGuiWindowFlags_NoMove |
@@ -168,13 +168,13 @@ void CGUI_Scene2D::Update(const double dElapsedTime)
 	ImGui::TextColored(ImVec4(1,1,0,1), "%d / %d",
 		cInventoryItem->GetCount(), cInventoryItem->GetMaxCount());
 
-	ImGui::End();
+	ImGui::End();*/
 
 	// Render the inventory items
 	//cInventoryItem = cInventoryManager->GetItem("Item");
 
 
-	ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(0.0f, 0.0f, 0.0f, 1.0f));  // Set a background color
+	ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(0.0f, 0.0f, 0.0f, 0.3f));  // Set a background color
 	ImGuiWindowFlags inventoryWindowFlags = ImGuiWindowFlags_AlwaysAutoResize |
 		ImGuiWindowFlags_NoTitleBar |
 		ImGuiWindowFlags_NoMove |

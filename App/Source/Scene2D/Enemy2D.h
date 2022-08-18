@@ -96,6 +96,7 @@ protected:
 		PATROL = 1,
 		CHASE = 2,
 		HUNTING = 3,
+		STUNNED = 4,
 		NUM_FSM
 	};
 
@@ -166,6 +167,8 @@ protected:
 	// Max count in a state
 	const int iMaxFSMCounter = 60;
 
+	const int stunnedCounter = 210;
+
 	// Constraint the enemy2D's position within a boundary
 	void Constraint(DIRECTION eDirection = LEFT);
 
@@ -190,6 +193,9 @@ protected:
 	void FlipVerticalDirection(void);
 
 	void FlipRandomDirection(void);
+
+	// Let player interact with the map
+	void InteractWithMap(void);
 
 	// Update position
 	void UpdatePosition(void);
