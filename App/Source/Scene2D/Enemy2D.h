@@ -97,6 +97,7 @@ protected:
 		CHASE = 2,
 		HUNTING = 3,
 		STUNNED = 4,
+		FLAREFLLW = 5,
 		NUM_FSM
 	};
 
@@ -168,6 +169,7 @@ protected:
 	const int iMaxFSMCounter = 60;
 
 	const int stunnedCounter = 210;
+	const int fllwCounter = 210;
 
 	// Constraint the enemy2D's position within a boundary
 	void Constraint(DIRECTION eDirection = LEFT);

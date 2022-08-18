@@ -143,6 +143,13 @@ bool CEnemy2D::Init(void)
  */
 void CEnemy2D::Update(const double dElapsedTime)
 {
+	unsigned int uiRow = -1;
+	unsigned int uiCol = -1;
+	if (cMap2D->FindValue(3, uiRow, uiCol)) {
+		sCurrentFSM = FLAREFLLW;
+		cout << "Fllwing Flare :3"<<endl;
+	}
+
 	if (cKeyboardController->IsKeyReleased(GLFW_KEY_SPACE))
 	{
 		sCurrentFSM = HUNTING;
@@ -320,9 +327,58 @@ void CEnemy2D::Update(const double dElapsedTime)
 		}
 		iFSMCounter++;
 		break;
+	case FLAREFLLW:
+		if (iFSMCounter > fllwCounter)
+		{
+			cMap2D->SetMapInfo(cPlayer2D->flareIndex.y, cPlayer2D->flareIndex.x, 0);
+			sCurrentFSM = PATROL;
+			iFSMCounter = 0;
+
+			cout << "Switching to Enemy::PATROL State" << endl;
+		}
+		else if (cPhysics2D.CalculateDistance(vec2Index, cPlayer2D->flareIndex) < 6.0f)
+		{
+			auto path = cMap2D->PathFind(vec2Index,
+				cPlayer2D->flareIndex,
+				heuristic::euclidean,
+				10);
+			//cout << "=== Printing out the path ===" << endl;
+			//system("pause");
+
+			// Calculate new destination
+			bool bFirstPosition = true;
+			for (const auto& coord : path)
+			{
+				std::cout << coord.x << "," << coord.y << "\n";
+				if (bFirstPosition == true)
+				{
+					// Set a destination
+					cPlayer2D->flareIndex = coord;
+					// Calculate the direction between enemy2D and this destination
+					i32vec2Direction = cPlayer2D->flareIndex - vec2Index;
+					bFirstPosition = false;
+				}
+				else
+				{
+					if ((coord - cPlayer2D->flareIndex) == i32vec2Direction)
+					{
+						// Set a destination
+						cPlayer2D->flareIndex = coord;
+					}
+					else
+						break;
+				}
+			}
+			UpdatePosition();
+		}
+
+		iFSMCounter++;
+		cout << iFSMCounter << endl;
+		break;
 	default:
 		break;
 	}
+
 
 	// Update Jump or Fall
 	//UpdateJumpFall(dElapsedTime);

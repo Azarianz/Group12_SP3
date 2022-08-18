@@ -63,6 +63,8 @@ public:
 	// PostRender
 	void PostRender(void);
 
+	glm::vec2 flareIndex;
+
 protected:
 	enum DIRECTION
 	{
@@ -92,6 +94,7 @@ protected:
 
 	//Player initial spawn location
 	glm::vec2 playerStart;
+
 
 	// InventoryManager
 	CInventoryManager* cInventoryManager;

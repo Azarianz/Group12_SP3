@@ -361,6 +361,7 @@ void CPlayer2D::Update(const double dElapsedTime)
 			if (cInventoryItem->GetCount() > 0 && cMap2D->GetMapInfo(vec2Index.y, vec2Index.x) == 0)
 			{
 				cMap2D->SetMapInfo(vec2Index.y, vec2Index.x, 3);
+				flareIndex = vec2Index;
 				cInventoryItem->Remove(1);
 				itemCollected = false;
 				flareCollected = false;
