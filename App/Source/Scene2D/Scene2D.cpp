@@ -310,7 +310,7 @@ void CScene2D::RandomSpawns(void)
 	while (WinZone == PlayerSpawn)
 	{
 		WinZone = rand() % 4;
-		cout << "winzone changed" << endl;
+		//cout << "winzone changed" << endl;
 	}
 
 	// set dog's spawn at 1 of 4 random locations
@@ -320,7 +320,7 @@ void CScene2D::RandomSpawns(void)
 	while ((DogSpawn == PlayerSpawn) || (DogSpawn == WinZone))
 	{
 		DogSpawn = rand() % 4;
-		cout << "dog changed" << endl;
+		//cout << "dog changed" << endl;
 	}
 
 	// set flare's spawn at 1 of 2 random locations
@@ -334,9 +334,10 @@ void CScene2D::RandomSpawns(void)
 	while (CerealSpawn[0] == CerealSpawn[1])
 	{
 		CerealSpawn[1] = rand() % 4;
-		cout << "CS1 changed" << endl;
+		//cout << "CS1 changed" << endl;
 	}
 
+	// Spawn player
 	switch (PlayerSpawn)
 	{
 	case 0:
@@ -356,6 +357,7 @@ void CScene2D::RandomSpawns(void)
 		break;
 	}
 
+	// Spawn win-zone
 	switch (WinZone)
 	{
 	case 0:
@@ -383,18 +385,98 @@ void CScene2D::RandomSpawns(void)
 		cMap2D->SetMapInfo(19, 32, 99);
 		break;
 	default:
+		cout << "Win-Zone is not spawned" << endl;
+		break;
+	}
+
+	// Spawn dog
+	switch (DogSpawn)
+	{
+	case 0:
+		cMap2D->SetMapInfo(29, 13, 400);
+		break;
+	case 1:
+		cMap2D->SetMapInfo(7, 13, 400);
+		break;
+	case 2:
+		cMap2D->SetMapInfo(1, 28, 400);
+		break;
+	case 3:
+		cMap2D->SetMapInfo(26, 28, 400);
+		break;
+	case 4:
+		cMap2D->SetMapInfo(18, 30, 400);
+		break;
+	case 5:
+		cMap2D->SetMapInfo(17, 1, 400);
+		break;
+	default:
 		cout << "Player is not spawned" << endl;
 		break;
 	}
 
-	cout << endl
+	// Spawn flare
+	switch (FlareSpawn)
+	{
+	case 0:
+		cMap2D->SetMapInfo(26, 18, 2);
+		break;
+	case 1:
+		cMap2D->SetMapInfo(3, 21, 2);
+		break;
+	default:
+		cout << "Flare is not spawned" << endl;
+		break;
+	}
+
+	// Spawn cereal 1
+	switch (CerealSpawn[0])
+	{
+	case 0:
+		cMap2D->SetMapInfo(19, 12, 4);
+		break;
+	case 1:
+		cMap2D->SetMapInfo(10, 8, 4);
+		break;
+	case 2:
+		cMap2D->SetMapInfo(17, 30, 4);
+		break;
+	case 3:
+		cMap2D->SetMapInfo(9, 26, 4);
+		break;
+	default:
+		cout << "Cereal1 is not spawned" << endl;
+		break;
+	}
+
+	// Spawn cereal 2
+	switch (CerealSpawn[1])
+	{
+	case 0:
+		cMap2D->SetMapInfo(19, 12, 4);
+		break;
+	case 1:
+		cMap2D->SetMapInfo(10, 8, 4);
+		break;
+	case 2:
+		cMap2D->SetMapInfo(17, 30, 4);
+		break;
+	case 3:
+		cMap2D->SetMapInfo(9, 26, 4);
+		break;
+	default:
+		cout << "Cereal2 is not spawned" << endl;
+		break;
+	}
+
+	/*cout << endl
 		<< "PS: " << PlayerSpawn << endl
 		<< "WZ: " << WinZone << endl
 		<< "DS: " << DogSpawn << endl
 		<< "FS: " << FlareSpawn << endl
 		<< "CS0: " << CerealSpawn[0] << endl
 		<< "CS1: " << CerealSpawn[1] << endl
-		<< endl;
+		<< endl;*/
 
 	return;
 }

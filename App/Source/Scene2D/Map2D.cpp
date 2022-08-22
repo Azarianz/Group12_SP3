@@ -199,68 +199,6 @@ bool CMap2D::Init(const unsigned int uiNumLevels,
 	return true;
 }
 
-void CMap2D::RandomSpawns(void)
-{
-	unsigned int PlayerSpawn;	// 4 different locations
-	unsigned int WinZone;	// 4 different locations
-	unsigned int DogSpawn;	// 6 different locations
-	unsigned int FlareSpawn;	// 2 different locations
-	//unsigned int HiFreqWhistleSpawn;	// 2 different locations
-	unsigned int CerealSpawn[2] = {};	// 4 different locations
-
-	// set player's spawn at 1 of 4 random locations
-	PlayerSpawn = rand() % 4;
-
-	// set win-zone at 1 of 4 random locations
-	WinZone = rand() % 4;
-	// if the win-zone and player spawn are in similar
-	// location, randomise again until they are diff
-	while (WinZone == PlayerSpawn)
-	{
-		WinZone = rand() % 4;
-		//cout << "winzone changed" << endl;
-	}
-
-	// set dog's spawn at 1 of 4 random locations
-	DogSpawn = rand() % 6;
-	// make sure the dog's spawn does not overlap
-	// with the other 2 spawns
-	while ((DogSpawn == PlayerSpawn) || (DogSpawn == WinZone))
-	{
-		DogSpawn = rand() % 4;
-		//cout << "dog changed" << endl;
-	}
-
-	// set flare's spawn at 1 of 2 random locations
-	FlareSpawn = rand() % 2;
-
-	// set hi-freq whistle's spawn at 1 of 2 random locations
-	//HiFreqWhistle = rand() % 2;
-
-	CerealSpawn[0] = rand() % 4;
-	CerealSpawn[1] = rand() % 4;
-	while (CerealSpawn[0] == CerealSpawn[1])
-	{
-		CerealSpawn[1] = rand() % 4;
-		//cout << "CS1 changed" << endl;
-	}
-
-	/*switch (PlayerSpawn) 
-	{
-	case 0:
-		cMap2D->SetMapInfo(uiRow, uiCol, 80);
-		break;
-	case 1:
-
-	case 2:
-
-	case 3:
-
-	}*/
-
-	return;
-}
-
 /**
  @brief Find a path
  */

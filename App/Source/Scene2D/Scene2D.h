@@ -95,6 +95,8 @@ protected:
 	// Handler to the SoundController
 	CSoundController* cSoundController;
 
+	// Randomly set the player spawn, dog spawn, win-zone spawn, 
+	// cereal spawn, hi-freq whistle spawn, flare spawn 
 	void RandomSpawns(void);
 
 	// Constructor
