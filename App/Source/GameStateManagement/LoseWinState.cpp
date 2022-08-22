@@ -69,9 +69,9 @@ bool CLoseWinState::Init(void)
 	//CShaderManager::GetInstance()->activeShader->setInt("texture1", 0);
 
 	//Create Background Entity
-	background = new CBackgroundEntity("Image/TitleScreen.png");
+	/*background = new CBackgroundEntity("Image/Assets/LoseScrn.png");
 	background->SetShader("Shader2D");
-	background->Init();
+	background->Init();*/
 
 	//Game Manager
 	cGameManager = CGameManager::GetInstance();
@@ -160,15 +160,15 @@ bool CLoseWinState::Update(const double dElapsedTime)
 
 		if (cGameManager->bPlayerWon == true)
 		{
-			cout << "Win Text" << endl;
-			ImGui::TextColored(ImVec4(1, 1, 1, 1), "You Won!", NULL);
-
+			background = new CBackgroundEntity("Image/Assets/WinScrn.png");
+			background->SetShader("Shader2D");
+			background->Init();
 		}
 		else if (cGameManager->bPlayerLost == true)
 		{
-			cout << "Lose Text" << endl;
-			ImGui::TextColored(ImVec4(1, 1, 1, 1), "You Lost!", NULL);
-
+			background = new CBackgroundEntity("Image/Assets/LoseScrn.png");
+			background->SetShader("Shader2D");
+			background->Init();
 		}
 
 		else 

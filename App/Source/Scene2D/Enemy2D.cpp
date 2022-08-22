@@ -111,6 +111,7 @@ bool CEnemy2D::Init(void)
 	glGenVertexArrays(1, &VAO);
 	glBindVertexArray(VAO);
 
+
 	//CS: Create the Quad Mesh using the mesh builder
 	quadMesh = CMeshBuilder::GenerateQuad(glm::vec4(1, 1, 1, 1), cSettings->TILE_WIDTH, cSettings->TILE_HEIGHT);
 
@@ -143,6 +144,8 @@ bool CEnemy2D::Init(void)
  */
 void CEnemy2D::Update(const double dElapsedTime)
 {
+	v1 = rand() % 100;
+	cout << v1 << endl;
 	if (sCurrentFSM != FLAREFLLW)
 	{
 		unsigned int uiRow = -1;
@@ -166,25 +169,22 @@ void CEnemy2D::Update(const double dElapsedTime)
 	switch (sCurrentFSM)
 	{
 	case IDLE:
-		//if (cSettings->MuteAudio == false)
-		//{
-		//	//Play Sound
-		//	cSoundController->PlaySoundByID(6);
-		//}
+		
 		if (iFSMCounter > iMaxFSMCounter)
 		{
 			sCurrentFSM = PATROL;
+			if (v1 == 99) {
+				cSoundController->PlaySoundByID(6);
+			}
 			iFSMCounter = 0;
 			cout << "Switching to Enemy::PATROL State" << endl;
 		}
 		iFSMCounter++;
 		break;
 	case PATROL:
-		//if (cSettings->MuteAudio == false)
-		//{
-		//	//Play Sound
-		//	cSoundController->PlaySoundByID(7);
-		//}	
+		if (v1 == 3) {
+			cSoundController->PlaySoundByID(7);
+		}
 		if (iFSMCounter > iMaxFSMCounter)
 		{
 			sCurrentFSM = IDLE;
@@ -243,7 +243,7 @@ void CEnemy2D::Update(const double dElapsedTime)
 						break;
 				}
 			}
-
+			cSoundController->PlaySoundByID(5);
 			//cout << "i32vec2Destination : " << i32vec2Destination.x 
 			//		<< ", " << i32vec2Destination.y << endl;
 			//cout << "i32vec2Direction : " << i32vec2Direction.x 
@@ -276,6 +276,7 @@ void CEnemy2D::Update(const double dElapsedTime)
 			{
 				sCurrentFSM = CHASE;
 				iFSMCounter = 0;
+
 				cout << "Switching to Enemy::CHASE State" << endl;
 			}
 
@@ -326,6 +327,7 @@ void CEnemy2D::Update(const double dElapsedTime)
 		{
 			sCurrentFSM = PATROL;
 			iFSMCounter = 0;
+			cSoundController->PlaySoundByID(8);
 			cout << "Switching to Enemy::PATROL State" << endl;
 
 		}

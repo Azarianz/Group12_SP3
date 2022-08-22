@@ -80,6 +80,8 @@ public:
 	// boolean flag to indicate if this enemy is active
 	bool bIsActive;
 
+	int v1;
+
 protected:
 	enum DIRECTION
 	{
@@ -166,10 +168,11 @@ protected:
 
 	// FSM counter - count how many frames it has been in this FSM
 	int iFSMCounter;
+	
 
 	// Max count in a state
 	const int iMaxFSMCounter = 60;
-
+	const int eSoundPlay = 270;
 	const int stunnedCounter = 210;
 	const int fllwCounter = 210;
 
