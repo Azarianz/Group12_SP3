@@ -23,6 +23,8 @@ using namespace std;
 //Game Manager
 #include "GameManager.h"
 
+#include "Pet2D.h"
+
 /**
  @brief Constructor This constructor has protected access modifier as this class will be a Singleton
  */
@@ -371,6 +373,16 @@ void CPlayer2D::Update(const double dElapsedTime)
 			}
 		}
 		flareCollected = false;
+	}
+
+	if (cKeyboardController->IsKeyPressed(GLFW_KEY_E)) {
+		cInventoryItem = cInventoryManager->GetItem("Whistle");
+
+		if (cInventoryItem->GetCount() > 0)
+		{
+			CPet2D::GetInstance()->HiHzWhistle();
+			cInventoryItem->Remove(1);
+		}
 	}
 
 	// Update Jump or Fall

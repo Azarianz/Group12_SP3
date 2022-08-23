@@ -87,6 +87,10 @@ bool CGUI_Scene2D::Init(void)
 	cInventoryItem = cInventoryManager->Add("Item3", "Image/Cornflakes.tga", 1, 0);
 	cInventoryItem->vec2Size = glm::vec2(25, 25);
 
+	// hi hz whistle
+	cInventoryItem = cInventoryManager->Add("Whistle", "Image/frequency.tga", 2, 2);
+	cInventoryItem->vec2Size = glm::vec2(25, 25);
+
 	// These variables are for IMGUI demo only
 	show_demo_window = true;
 	show_another_window = true;
@@ -172,8 +176,6 @@ void CGUI_Scene2D::Update(const double dElapsedTime)
 
 	// Render the inventory items
 	//cInventoryItem = cInventoryManager->GetItem("Item");
-
-
 	ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(0.0f, 0.0f, 0.0f, 0.3f));  // Set a background color
 	ImGuiWindowFlags inventoryWindowFlags = ImGuiWindowFlags_AlwaysAutoResize |
 		ImGuiWindowFlags_NoTitleBar |
@@ -182,7 +184,7 @@ void CGUI_Scene2D::Update(const double dElapsedTime)
 		ImGuiWindowFlags_NoCollapse |
 		ImGuiWindowFlags_NoScrollbar;
 	ImGui::Begin("Image", NULL, inventoryWindowFlags);
-	ImGui::SetWindowPos(ImVec2(cSettings->iWindowWidth * 0.03f, cSettings->iWindowHeight * 0.9f));
+	ImGui::SetWindowPos(ImVec2(cSettings->iWindowWidth * 0.03f, cSettings->iWindowHeight * 0.8f));
 	ImGui::SetWindowSize(ImVec2(200.0f * relativeScale_x, 25.0f * relativeScale_y));
 	if (itemType == 1)
 		cInventoryItem = cInventoryManager->GetItem("Item2");
@@ -194,6 +196,23 @@ void CGUI_Scene2D::Update(const double dElapsedTime)
 		ImVec2(cInventoryItem->vec2Size.x * relativeScale_x,
 			cInventoryItem->vec2Size.y * relativeScale_y),
 		ImVec2(0, 1), ImVec2(1, 0));
+	ImGui::End();
+	ImGui::PopStyleColor();
+
+	// Render whistle
+	ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(0.0f, 0.0f, 0.0f, 0.3f));  // Set a background color
+	ImGui::Begin("Image2", NULL, inventoryWindowFlags);
+	ImGui::SetWindowPos(ImVec2(cSettings->iWindowWidth * 0.03f, cSettings->iWindowHeight * 0.9f));
+	ImGui::SetWindowSize(ImVec2(200.0f * relativeScale_x, 25.0f * relativeScale_y));
+	cInventoryItem = cInventoryManager->GetItem("Whistle");
+	ImGui::Image((void*)(intptr_t)cInventoryItem->GetTextureID(),
+		ImVec2(cInventoryItem->vec2Size.x * relativeScale_x,
+			cInventoryItem->vec2Size.y * relativeScale_y),
+		ImVec2(0, 1), ImVec2(1, 0));
+	ImGui::SameLine();
+	ImGui::SetWindowFontScale(1.5f * relativeScale_y);
+	ImGui::TextColored(ImVec4(1, 1, 0, 1), "%d / %d",
+		cInventoryItem->GetCount(), cInventoryItem->GetMaxCount());
 	ImGui::End();
 	ImGui::PopStyleColor();
 
