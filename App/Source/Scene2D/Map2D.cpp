@@ -192,6 +192,8 @@ bool CMap2D::Init(const unsigned int uiNumLevels,
 	m_directions = { { -1, 0 }, { 1, 0 }, { 0, 1 }, { 0, -1 },
 						{ -1, -1 }, { 1, 1 }, { -1, 1 }, { 1, -1 } };
 
+
+
 	// Resize these 2 lists
 	m_cameFromList.resize(cSettings->NUM_TILES_YAXIS * cSettings->NUM_TILES_XAXIS);
 	m_closedList.resize(cSettings->NUM_TILES_YAXIS * cSettings->NUM_TILES_XAXIS, false);
@@ -498,28 +500,36 @@ void CMap2D::PreRender(void)
 /**
  @brief Render Render this instance
  */
-void CMap2D::Render(void)
+void CMap2D::Render(glm::vec2 PlayerPos)
 {
 	// get matrix's uniform location and set matrix
 	unsigned int transformLoc = glGetUniformLocation(CShaderManager::GetInstance()->activeShader->ID, "transform");
 	glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(transform));
+
 
 	// Render
 	for (unsigned int uiRow = 0; uiRow < cSettings->NUM_TILES_YAXIS; uiRow++)
 	{
 		for (unsigned int uiCol = 0; uiCol < cSettings->NUM_TILES_XAXIS; uiCol++)
 		{
-			transform = glm::mat4(1.0f); // make sure to initialize matrix to identity matrix first
-			transform = glm::translate(transform, glm::vec3(cSettings->ConvertIndexToUVSpace(cSettings->x, uiCol, false, 0),
-				cSettings->ConvertIndexToUVSpace(cSettings->y, uiRow, true, 0),
-				0.0f));
-			//transform = glm::rotate(transform, (float)glfwGetTime(), glm::vec3(0.0f, 0.0f, 1.0f));
 
-			// Update the shaders with the latest transform
-			glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(transform));
+			if (((PlayerPos.x - uiCol < 7) && (PlayerPos.x - uiCol > -7)) &&
+				((PlayerPos.y - (30 - uiRow) < 7) && (PlayerPos.y - (30 - uiRow) > -7)))
+			{
 
-			// Render a tile
-			RenderTile(uiRow, uiCol);
+				transform = glm::mat4(1.0f); // make sure to initialize matrix to identity matrix first
+				transform = glm::translate(transform, glm::vec3(cSettings->ConvertIndexToUVSpace(cSettings->x, uiCol, false, 0),
+					cSettings->ConvertIndexToUVSpace(cSettings->y, uiRow, true, 0),
+					0.0f));
+				//transform = glm::rotate(transform, (float)glfwGetTime(), glm::vec3(0.0f, 0.0f, 1.0f));
+
+				// Update the shaders with the latest transform
+				glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(transform));
+
+
+				// Render a tile
+				RenderTile(uiRow, uiCol);
+			}
 		}
 	}
 }

@@ -31,6 +31,7 @@
 // Include Entity2D
 #include "Primitives/Entity2D.h"
 
+
 // Include files for AStar
 #include <queue>
 #include <functional>
@@ -84,7 +85,7 @@ public:
 	void PreRender(void);
 
 	// Render
-	void Render(void);
+	void Render(glm::vec2 PlayerPos);
 
 	// PostRender
 	void PostRender(void);
@@ -181,6 +182,7 @@ protected:
 	std::vector<bool> m_closedList;
 	std::vector<Grid> m_cameFromList;
 	std::vector<glm::vec2> m_directions;
+
 
 	// Constructor
 	CMap2D(void);

@@ -102,8 +102,8 @@ bool CScene2D::Init(void)
 		return false;
 	}
 
-	srand(time(NULL));
-	RandomSpawns();
+	srand(time(NULL)); 
+	RandomSpawns(); // has to be called before initialising the cPlayer2D 
 
 	// Load Scene2DColour into ShaderManager
 	CShaderManager::GetInstance()->Use("Shader2D_Colour");
@@ -239,8 +239,8 @@ void CScene2D::PreRender(void)
 	// Reset the OpenGL rendering environment
 	glLoadIdentity();
 
-	// Clear the screen and buffer
-	glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
+	// Clear the screen and buffer 
+	glClearColor(0.0f, 0.0f, 0.0f, 1.0f); // ***** change colour of bg here
 	glClear(GL_COLOR_BUFFER_BIT);
 
 	// Enable 2D texture rendering
@@ -254,15 +254,26 @@ void CScene2D::Render(void)
 {
 	// Call the CEnemy2D's PreRender()
 	cEnemy2D->PreRender();
-	// Call the CEnemy2D's Render()
-	cEnemy2D->Render();
+	// if the Enemy is within range, render it
+	if (((cPlayer2D->vec2Index.x - cEnemy2D->vec2Index.x < 7) && (cPlayer2D->vec2Index.x - cEnemy2D->vec2Index.x > -7)) &&
+		((cPlayer2D->vec2Index.y - cEnemy2D->vec2Index.y < 7) && (cPlayer2D->vec2Index.y - cEnemy2D->vec2Index.y > -7)))
+	{
+		// Call the CEnemy2D's Render()
+		cEnemy2D->Render();
+	}
 	// Call the CEnemy2D's PostRender()
 	cEnemy2D->PostRender();
 
+	
 	// Call the CPet2D's PreRender()
 	cPet2D->PreRender();
-	// Call the CPet2D's Render()
-	cPet2D->Render();
+	// if the Pet is within range, render it
+	if (((cPlayer2D->vec2Index.x - cPet2D->vec2Index.x < 7) && (cPlayer2D->vec2Index.x - cPet2D->vec2Index.x > -7)) &&
+		((cPlayer2D->vec2Index.y - cPet2D->vec2Index.y < 7) && (cPlayer2D->vec2Index.y - cPet2D->vec2Index.y > -7)))
+	{
+		// Call the CPet2D's Render()
+		cPet2D->Render();
+	}
 	// Call the CPet2D's PostRender()
 	cPet2D->PostRender();
 
@@ -275,8 +286,8 @@ void CScene2D::Render(void)
 
 	// Call the Map2D's PreRender()
 	cMap2D->PreRender();
-	// Call the Map2D's Render()
-	cMap2D->Render();
+	// Call the Map2D's Render() // if player is within range
+	cMap2D->Render(cPlayer2D->vec2Index); // get the player's position and render those within range
 	// Call the Map2D's PostRender()
 	cMap2D->PostRender();
 
