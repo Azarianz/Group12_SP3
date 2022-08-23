@@ -174,16 +174,13 @@ void CEnemy2D::Update(const double dElapsedTime)
 	switch (sCurrentFSM)
 	{
 	case IDLE:
-<<<<<<< Updated upstream
-		
-=======
 		if (cSettings->MuteAudio == false)
 		{
 			//Play Sound
 			cSoundController->PlaySoundByID(6);
 		}
 		cout << "DEMON IDLE" << endl;
->>>>>>> Stashed changes
+
 		if (iFSMCounter > iMaxFSMCounter)
 		{
 			sCurrentFSM = PATROL;
@@ -196,18 +193,17 @@ void CEnemy2D::Update(const double dElapsedTime)
 		iFSMCounter++;
 		break;
 	case PATROL:
-<<<<<<< Updated upstream
 		if (v1 == 3) {
 			cSoundController->PlaySoundByID(7);
 		}
-=======
+
 		if (cSettings->MuteAudio == false)
 		{
 			//Play Sound
 			cSoundController->PlaySoundByID(7);
 		}	
 		cout << "DEMON PATROL" << endl;
->>>>>>> Stashed changes
+
 		if (iFSMCounter > iMaxFSMCounter)
 		{
 			sCurrentFSM = IDLE;
@@ -253,7 +249,7 @@ void CEnemy2D::Update(const double dElapsedTime)
 					break;
 				}
 			}
-<<<<<<< Updated upstream
+
 			cSoundController->PlaySoundByID(5);
 			//cout << "i32vec2Destination : " << i32vec2Destination.x 
 			//		<< ", " << i32vec2Destination.y << endl;
@@ -264,9 +260,7 @@ void CEnemy2D::Update(const double dElapsedTime)
 			// Attack
 			// Update direction to move towards for attack
 			//UpdateDirection();
-
-=======
->>>>>>> Stashed changes
+			// 
 			// Update the Enemy2D's position for attack
 			UpdatePosition();
 		}

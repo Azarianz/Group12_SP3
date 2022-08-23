@@ -221,12 +221,6 @@ void CPlayer2D::Update(const double dElapsedTime)
 				vec2NumMicroSteps.x = 0;
 			}
 
-			// Check if player is in mid-air, such as walking off a platform
-			if (IsMidAir() == true)
-			{
-				if (cPhysics2D.GetStatus() != CPhysics2D::STATUS::JUMP)
-					cPhysics2D.SetStatus(CPhysics2D::STATUS::FALL);
-			}
 
 			//CS: Play the "left" animation
 			animatedSprites->PlayAnimation("right", -1, 0.2f);
@@ -256,13 +250,6 @@ void CPlayer2D::Update(const double dElapsedTime)
 			if (CheckPosition(RIGHT) == false)
 			{
 				vec2NumMicroSteps.x = 0;
-			}
-
-			// Check if player is in mid-air, such as walking off a platform
-			if (IsMidAir() == true)
-			{
-				if (cPhysics2D.GetStatus() != CPhysics2D::STATUS::JUMP)
-					cPhysics2D.SetStatus(CPhysics2D::STATUS::FALL);
 			}
 
 			//CS: Play the "right" animation
