@@ -323,6 +323,30 @@ void CPet2D::SetPlayer2D(CPlayer2D* cPlayer2D)
 	UpdateDirection();
 }
 
+void CPet2D::HiHzWhistle()
+{
+	cout << "im in" << endl;
+	sCurrentFSM = FOLLOW;
+
+	if (cSettings->MuteAudio == false)
+	{
+		//Play Sound
+		cSoundController->PlaySoundByID(9);
+
+
+		if (cPhysics2D.CalculateDistance(vec2Index, cPlayer2D->vec2Index) < 10.0f)
+		{
+			cout << "Calculating pet path..." << endl;
+			//Calculate a path to the player
+			path = cMap2D->PathFind(vec2Index,
+				cPlayer2D->vec2Index,
+				heuristic::manhattan,
+				10);
+			sCurrentFSM = FOLLOW;
+		}
+	}
+}
+
 
 /**
  @brief Constraint the enemy2D's position within a boundary

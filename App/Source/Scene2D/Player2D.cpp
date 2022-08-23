@@ -23,6 +23,8 @@ using namespace std;
 //Game Manager
 #include "GameManager.h"
 
+#include "Pet2D.h"
+
 /**
  @brief Constructor This constructor has protected access modifier as this class will be a Singleton
  */
@@ -221,12 +223,6 @@ void CPlayer2D::Update(const double dElapsedTime)
 				vec2NumMicroSteps.x = 0;
 			}
 
-			// Check if player is in mid-air, such as walking off a platform
-			if (IsMidAir() == true)
-			{
-				if (cPhysics2D.GetStatus() != CPhysics2D::STATUS::JUMP)
-					cPhysics2D.SetStatus(CPhysics2D::STATUS::FALL);
-			}
 
 			//CS: Play the "left" animation
 			animatedSprites->PlayAnimation("right", -1, 0.2f);
@@ -256,13 +252,6 @@ void CPlayer2D::Update(const double dElapsedTime)
 			if (CheckPosition(RIGHT) == false)
 			{
 				vec2NumMicroSteps.x = 0;
-			}
-
-			// Check if player is in mid-air, such as walking off a platform
-			if (IsMidAir() == true)
-			{
-				if (cPhysics2D.GetStatus() != CPhysics2D::STATUS::JUMP)
-					cPhysics2D.SetStatus(CPhysics2D::STATUS::FALL);
 			}
 
 			//CS: Play the "right" animation
@@ -384,6 +373,16 @@ void CPlayer2D::Update(const double dElapsedTime)
 			}
 		}
 		flareCollected = false;
+	}
+
+	if (cKeyboardController->IsKeyPressed(GLFW_KEY_E)) {
+		cInventoryItem = cInventoryManager->GetItem("Whistle");
+
+		if (cInventoryItem->GetCount() > 0)
+		{
+			CPet2D::GetInstance()->HiHzWhistle();
+			cInventoryItem->Remove(1);
+		}
 	}
 
 	// Update Jump or Fall

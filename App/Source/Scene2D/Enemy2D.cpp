@@ -174,16 +174,13 @@ void CEnemy2D::Update(const double dElapsedTime)
 	switch (sCurrentFSM)
 	{
 	case IDLE:
-<<<<<<< Updated upstream
-		
-=======
 		if (cSettings->MuteAudio == false)
 		{
 			//Play Sound
 			cSoundController->PlaySoundByID(6);
 		}
 		cout << "DEMON IDLE" << endl;
->>>>>>> Stashed changes
+
 		if (iFSMCounter > iMaxFSMCounter)
 		{
 			sCurrentFSM = PATROL;
@@ -191,30 +188,26 @@ void CEnemy2D::Update(const double dElapsedTime)
 				cSoundController->PlaySoundByID(6);
 			}
 			iFSMCounter = 0;
-			//cout << "Switching to Enemy::PATROL State" << endl;
 		}
 		iFSMCounter++;
 		break;
 	case PATROL:
-<<<<<<< Updated upstream
 		if (v1 == 3) {
 			cSoundController->PlaySoundByID(7);
 		}
-=======
+
 		if (cSettings->MuteAudio == false)
 		{
 			//Play Sound
 			cSoundController->PlaySoundByID(7);
 		}	
-		cout << "DEMON PATROL" << endl;
->>>>>>> Stashed changes
+
 		if (iFSMCounter > iMaxFSMCounter)
 		{
 			sCurrentFSM = IDLE;
 			iFSMCounter = 0;
-			//cout << "Switching to Enemy::IDLE State" << endl;
 		}
-		else if (cPhysics2D.CalculateDistance(vec2Index, cPlayer2D->vec2Index) < 8.0f)
+		else if (cPhysics2D.CalculateDistance(vec2Index, cPlayer2D->vec2Index) < 7.0f)
 		{
 			sCurrentFSM = CHASE;
 			iFSMCounter = 0;
@@ -224,110 +217,75 @@ void CEnemy2D::Update(const double dElapsedTime)
 			// Patrol around
 			// Update the Enemy2D's position for patrol
 			UpdatePatrol();
+			cout << "DEMON PATROL" << endl;
 		}
 		iFSMCounter++;
 		break;
 	case CHASE:
-		if (cPhysics2D.CalculateDistance(vec2Index, cPlayer2D->vec2Index) < 8.0f)
+		if (cPhysics2D.CalculateDistance(vec2Index, cPlayer2D->vec2Index) < 7.0f)
 		{
 			cout << "DEMON CHASE" << endl;
-			//path = cMap2D->PathFind(vec2Index,
-			//	cPlayer2D->vec2Index,
-			//	heuristic::manhattan,
-			//	10);
-			//cout << "=== Printing out the path ===" << endl;
-			//system("pause");
+
+			path = cMap2D->PathFind(vec2Index,
+				cPlayer2D->vec2Index,
+				heuristic::manhattan,
+				10);
 
 			for (const auto& coord : path)
 			{
-				if (vec2Index != path[path.size() - 1])
-				{
-					// Set a destination
-					i32vec2Destination = coord;
-					// Calculate the direction between enemy2D and this destination
-					i32vec2Direction = i32vec2Destination - vec2Index;
-				}
-				else
-				{
-					cout << "Reached destination" << endl;
-					break;
-				}
+				// Set a destination
+				i32vec2Destination = coord;
+				// Calculate the direction between enemy2D and this destination
+				i32vec2Direction = i32vec2Destination - vec2Index;
 			}
-<<<<<<< Updated upstream
+
 			cSoundController->PlaySoundByID(5);
-			//cout << "i32vec2Destination : " << i32vec2Destination.x 
-			//		<< ", " << i32vec2Destination.y << endl;
-			//cout << "i32vec2Direction : " << i32vec2Direction.x 
-			//		<< ", " << i32vec2Direction.y << endl;
-			//system("pause");
 
-			// Attack
-			// Update direction to move towards for attack
-			//UpdateDirection();
-
-=======
->>>>>>> Stashed changes
 			// Update the Enemy2D's position for attack
 			UpdatePosition();
 		}
 		else
 		{
-			if (iFSMCounter > iMaxFSMCounter)
-			{
-				sCurrentFSM = PATROL;
-				iFSMCounter = 0;
-				cout << "CHASE : Reset counter: " << iFSMCounter << endl;
-			}
-
+			sCurrentFSM = PATROL;
+			iFSMCounter = 0;
+			cout << "CHASE : Reset counter: " << iFSMCounter << endl;
 		}
+
 		iFSMCounter++;
 		break;
 	case HUNTING:
-		if (iFSMCounter < iMaxFSMCounter)
+		cout << "DEMON HUNTING" << endl;
+
+		// Calculate new destination
+		for (const auto& coord : path)
 		{
-			cout << "DEMON HUNTING" << endl;
-			if (cPhysics2D.CalculateDistance(vec2Index, cPlayer2D->vec2Index) < 8.0f)
+			if (vec2Index != playerLast)
 			{
-				sCurrentFSM = CHASE;
-				iFSMCounter = 0;
-
-				cout << "Switching to Enemy::CHASE State" << endl;
+				// Set a destination
+				i32vec2Destination = coord;
+				// Calculate the direction between enemy2D and this destination
+				i32vec2Direction = i32vec2Destination - vec2Index;
 			}
-
-			iFSMCounter = 0;
-
-			//Calculate a path to the player
-			//path = cMap2D->PathFind(vec2Index,
-			//	playerLast,
-			//	heuristic::euclidean,
-			//	10);
-
-			// Calculate new destination
-			for (const auto& coord : path)
+			else
 			{
-				if (vec2Index != path[path.size() - 1])
-				{
-					// Set a destination
-					i32vec2Destination = coord;
-					// Calculate the direction between enemy2D and this destination
-					i32vec2Direction = i32vec2Destination - vec2Index;
-				}
-				else
-				{
-					cout << "Reached destination" << endl;
-					break;
-				}
-			}
-			// Update the Enemy2D's position for attack
-			UpdatePosition();
-
-			if (vec2Index == playerLast)
-			{
+				cout << "Reached destination" << endl;
 				sCurrentFSM = IDLE;
 				iFSMCounter = 0;
-				cout << "CHASE : Reset counter: " << iFSMCounter << endl;
+				break;
 			}
 		}
+
+		// Update the Enemy2D's position for attack
+		UpdatePosition();
+
+		if (cPhysics2D.CalculateDistance(vec2Index, cPlayer2D->vec2Index) < 7.0f)
+		{
+			sCurrentFSM = CHASE;
+			iFSMCounter = 0;
+
+			cout << "Switching to Enemy::CHASE State" << endl;
+		}
+
 	case STUNNED:
 		if (iFSMCounter > stunnedCounter)
 		{
@@ -350,18 +308,10 @@ void CEnemy2D::Update(const double dElapsedTime)
 		}
 		else if (cPhysics2D.CalculateDistance(vec2Index, cPlayer2D->flareIndex) > 1.0f)
 		{
-			//path = cMap2D->PathFind(vec2Index,
-			//	cPlayer2D->flareIndex,
-			//	heuristic::manhattan,
-			//	10);
-			//cout << "=== Printing out the path ===" << endl;
-			//system("pause");
-
 			// Calculate new destination
 			bool bFirstPosition = true;
 			for (const auto& coord : path)
 			{
-				//std::cout << coord.x << "," << coord.y << "\n";
 				if (bFirstPosition == true)
 				{
 					// Set a destination
@@ -547,6 +497,8 @@ void CEnemy2D::Constraint(DIRECTION eDirection)
  */
 bool CEnemy2D::CheckPosition(DIRECTION eDirection)
 {
+	cout << "Direction: " << eDirection << endl;
+	cout << "x: " << vec2Index.x << " y: " << vec2Index.y << endl;
 	if (eDirection == LEFT)
 	{
 		// If the new position is fully within a row, then check this row only
@@ -627,18 +579,19 @@ bool CEnemy2D::CheckPosition(DIRECTION eDirection)
 				return false;
 			}
 		}
+
+		cout << "ENEMY DIR: UP" << endl;
 	}
 	else if (eDirection == DOWN)
 	{
-		// If the new position is fully within a column, then check this column only
-		if (i32vec2NumMicroSteps.x == 0)
+		if (vec2Index.y <= 0)
 		{
-			// If the grid is not accessible, then return false
-			if (cMap2D->GetMapInfo(vec2Index.y - 1, vec2Index.x) >= 100)
-			{
-				return false;
-			}
+			cout << "Demon is outside the bottom screen" << endl;
+			i32vec2NumMicroSteps.y = 0;
+			return true;
+
 		}
+
 		// If the new position is between 2 columns, then check both columns as well
 		else if (i32vec2NumMicroSteps.x != 0)
 		{
@@ -649,13 +602,23 @@ bool CEnemy2D::CheckPosition(DIRECTION eDirection)
 				return false;
 			}
 		}
+
+		// If the new position is fully within a column, then check this column only
+		if (i32vec2NumMicroSteps.x == 0)
+		{
+			// If the grid is not accessible, then return false
+			if (cMap2D->GetMapInfo(vec2Index.y - 1, vec2Index.x) >= 100)
+			{
+				return false;
+			}
+		}
 	}
 	else
 	{
 		cout << "CEnemy2D::CheckPosition: Unknown direction." << endl;
 	}
 
-		return true;
+	return true;
 }
 
 /**
@@ -721,7 +684,7 @@ void CEnemy2D::UpdateDirection(void)
 	}
 }
 
-/**
+/**x
  @brief Flip horizontal direction. For patrol use only
  */
 void CEnemy2D::FlipHorizontalDirection(void)
@@ -780,7 +743,8 @@ void CEnemy2D::FlipRandomDirection(void)
 				break;
 			}
 		}
-	
+
+		temp = -1;	
 	}
 }
 
@@ -933,7 +897,6 @@ void CEnemy2D::UpdatePosition(void)
 		InteractWithPlayer();
 
 	}
-
 
 }
 
