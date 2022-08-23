@@ -160,6 +160,18 @@ void CPet2D::Update(const double dElapsedTime)
 		{
 			//Play Sound
 			cSoundController->PlaySoundByID(9);
+
+			
+			if (cPhysics2D.CalculateDistance(vec2Index, cPlayer2D->vec2Index) < 10.0f)
+			{
+				cout << "Calculating pet path..." << endl;
+				//Calculate a path to the player
+				path = cMap2D->PathFind(vec2Index,
+					cPlayer2D->vec2Index,
+					heuristic::manhattan,
+					10);
+				sCurrentFSM = FOLLOW;
+			}
 		}
 	}
 
@@ -167,52 +179,39 @@ void CPet2D::Update(const double dElapsedTime)
 	{
 	case IDLE:
 		iFSMCounter = 0;
-		cout << "Switching to Pet::IDLE State" << endl;
+		//cout << "Switching to Pet::IDLE State" << endl;
 		break;
 	case FOLLOW:
 		if (iFSMCounter > iMaxFSMCounter)
 		{
 			sCurrentFSM = IDLE;
 			iFSMCounter = 0;
-			cout << "FOLLOW : Reset counter: " << iFSMCounter << endl;
+			//cout << "FOLLOW : Reset counter: " << iFSMCounter << endl;
 		}
 
 		if (cPhysics2D.CalculateDistance(vec2Index, cPlayer2D->vec2Index) < 8.0f)
 		{
-			//Calculate a path to the player
-			auto path = cMap2D->PathFind(vec2Index,
-				cPlayer2D->vec2Index,
-				heuristic::euclidean,
-				10);
-
 			// Calculate new destination
 			bool bFirstPosition = true;
 			for (const auto& coord : path)
 			{
-				std::cout << coord.x << "," << coord.y << "\n";
-				if (bFirstPosition == true)
+				if (vec2Index != path[path.size() - 1])
 				{
 					// Set a destination
 					i32vec2Destination = coord;
 					// Calculate the direction between enemy2D and this destination
 					i32vec2Direction = i32vec2Destination - vec2Index;
-					bFirstPosition = false;
 				}
 				else
 				{
-					if ((coord - i32vec2Destination) == i32vec2Direction)
-					{
-						// Set a destination
-						i32vec2Destination = coord;
-					}
-					else
-						break;
+					cout << "Pet reached destination" << endl;
+					break;
 				}
 			}
 
 			// Update the Enemy2D's position for attack
 			UpdatePosition();
-			cout << "Switching to Pet::FOLLOW State" << endl;
+			//cout << "Switching to Pet::FOLLOW State" << endl;
 		}
 
 		iFSMCounter++;
@@ -486,130 +485,6 @@ bool CPet2D::CheckPosition(DIRECTION eDirection)
 	return true;
 }
 
-// Check if the enemy2D is in mid-air
-bool CPet2D::IsMidAir(void)
-{
-	// if the player is at the bottom row, then he is not in mid-air for sure
-	if (vec2Index.y == 0)
-		return false;
-
-	// Check if the tile below the player's current position is empty
-	if ((i32vec2NumMicroSteps.x == 0) &&
-		(cMap2D->GetMapInfo(vec2Index.y - 1, vec2Index.x) == 0))
-	{
-		return true;
-	}
-
-	return false;
-}
-
-// Update Jump or Fall
-void CPet2D::UpdateJumpFall(const double dElapsedTime)
-{
-	if (cPhysics2D.GetStatus() == CPhysics2D::STATUS::JUMP)
-	{
-		// Update the elapsed time to the physics engine
-		cPhysics2D.SetTime((float)dElapsedTime);
-		// Call the physics engine update method to calculate the final velocity and displacement
-		cPhysics2D.Update();
-		// Get the displacement from the physics engine
-		glm::vec2 v2Displacement = cPhysics2D.GetDisplacement();
-
-		// Store the current vec2Index.y
-		int iIndex_YAxis_OLD = vec2Index.y;
-
-		int iDisplacement_MicroSteps = (int)(v2Displacement.y / cSettings->MICRO_STEP_YAXIS); //DIsplacement divide by distance for 1 microstep
-		if (vec2Index.y < (int)cSettings->NUM_TILES_YAXIS)
-		{
-			i32vec2NumMicroSteps.y += iDisplacement_MicroSteps;
-			if (i32vec2NumMicroSteps.y > cSettings->NUM_STEPS_PER_TILE_YAXIS)
-			{
-				i32vec2NumMicroSteps.y -= cSettings->NUM_STEPS_PER_TILE_YAXIS;
-				if (i32vec2NumMicroSteps.y < 0)
-					i32vec2NumMicroSteps.y = 0;
-				vec2Index.y++;
-			}
-		}
-
-		// Constraint the player's position within the screen boundary
-		Constraint(UP);
-
-		// Iterate through all rows until the proposed row
-		// Check if the player will hit a tile; stop jump if so.
-		int iIndex_YAxis_Proposed = vec2Index.y;
-		for (int i = iIndex_YAxis_OLD; i <= iIndex_YAxis_Proposed; i++)
-		{
-			// Change the player's index to the current i value
-			vec2Index.y = i;
-			// If the new position is not feasible, then revert to old position
-			if (CheckPosition(UP) == false)
-			{
-				// Align with the row
-				i32vec2NumMicroSteps.y = 0;
-				// Set the Physics to fall status
-				cPhysics2D.SetStatus(CPhysics2D::STATUS::FALL);
-				break;
-			}
-		}
-
-		// If the player is still jumping and the initial velocity has reached zero or below zero, 
-		// then it has reach the peak of its jump
-		if ((cPhysics2D.GetStatus() == CPhysics2D::STATUS::JUMP) && (cPhysics2D.GetInitialVelocity().y <= 0.0f))
-		{
-			// Set status to fall
-			cPhysics2D.SetStatus(CPhysics2D::STATUS::FALL);
-		}
-	}
-	else if (cPhysics2D.GetStatus() == CPhysics2D::STATUS::FALL)
-	{
-		// Update the elapsed time to the physics engine
-		cPhysics2D.SetTime((float)dElapsedTime);
-		// Call the physics engine update method to calculate the final velocity and displacement
-		cPhysics2D.Update();
-		// Get the displacement from the physics engine
-		glm::vec2 v2Displacement = cPhysics2D.GetDisplacement();
-
-		// Store the current vec2Index.y
-		int iIndex_YAxis_OLD = vec2Index.y;
-
-		// Translate the displacement from pixels to indices
-		int iDisplacement_MicroSteps = (int)(v2Displacement.y / cSettings->MICRO_STEP_YAXIS);
-
-		if (vec2Index.y >= 0)
-		{
-			i32vec2NumMicroSteps.y -= fabs(iDisplacement_MicroSteps);
-			if (i32vec2NumMicroSteps.y < 0)
-			{
-				i32vec2NumMicroSteps.y = ((int)cSettings->NUM_STEPS_PER_TILE_YAXIS) - 1;
-				vec2Index.y--;
-			}
-		}
-
-		// Constraint the player's position within the screen boundary
-		Constraint(DOWN);
-
-		// Iterate through all rows until the proposed row
-		// Check if the player will hit a tile; stop fall if so.
-		int iIndex_YAxis_Proposed = vec2Index.y;
-		for (int i = iIndex_YAxis_OLD; i >= iIndex_YAxis_Proposed; i--)
-		{
-			// Change the player's index to the current i value
-			vec2Index.y = i;
-			// If the new position is not feasible, then revert to old position
-			if (CheckPosition(DOWN) == false)
-			{
-				// Revert to the previous position
-				if (i != iIndex_YAxis_OLD)
-					vec2Index.y = i + 1;
-				// Set the Physics to idle status
-				cPhysics2D.SetStatus(CPhysics2D::STATUS::IDLE);
-				i32vec2NumMicroSteps.y = 0;
-				break;
-			}
-		}
-	}
-}
-
 /**
  @brief Let enemy2D interact with the player.
  */
@@ -712,11 +587,11 @@ void CPet2D::UpdatePosition(void)
 		const int iOldIndex = vec2Index.x;
 		if (vec2Index.x >= 0)
 		{
-			i32vec2NumMicroSteps.x -= petSpeed;
+			i32vec2NumMicroSteps.x--;
 			if (i32vec2NumMicroSteps.x < 0)
 			{
-				i32vec2NumMicroSteps.x = ((int)cSettings->NUM_STEPS_PER_TILE_XAXIS) - 1;
-				vec2Index.x -= petSpeed;
+				i32vec2NumMicroSteps.x = ((int)cSettings->NUM_STEPS_PER_TILE_XAXIS) + 2;
+				vec2Index.x--;
 			}
 		}
 
@@ -740,12 +615,12 @@ void CPet2D::UpdatePosition(void)
 		const int iOldIndex = vec2Index.x;
 		if (vec2Index.x < (int)cSettings->NUM_TILES_XAXIS)
 		{
-			i32vec2NumMicroSteps.x += petSpeed;
+			i32vec2NumMicroSteps.x++;
 
 			if (i32vec2NumMicroSteps.x >= cSettings->NUM_STEPS_PER_TILE_XAXIS)
 			{
 				i32vec2NumMicroSteps.x = 0;
-				vec2Index.x += petSpeed;
+				vec2Index.x++;
 			}
 		}
 
@@ -769,11 +644,11 @@ void CPet2D::UpdatePosition(void)
 		const int iOldIndex = vec2Index.y;
 		if (vec2Index.y >= 0)
 		{
-			i32vec2NumMicroSteps.y -= petSpeed;
+			i32vec2NumMicroSteps.y--;
 			if (i32vec2NumMicroSteps.y < 0)
 			{
-				i32vec2NumMicroSteps.y = ((int)cSettings->NUM_STEPS_PER_TILE_YAXIS) - 1;
-				vec2Index.y -= petSpeed;
+				i32vec2NumMicroSteps.y = ((int)cSettings->NUM_STEPS_PER_TILE_YAXIS) + 2;
+				vec2Index.y--;
 			}
 		}
 
@@ -797,12 +672,12 @@ void CPet2D::UpdatePosition(void)
 		const int iOldIndex = vec2Index.y;
 		if (vec2Index.y < (int)cSettings->NUM_TILES_YAXIS)
 		{
-			i32vec2NumMicroSteps.y += petSpeed;
+			i32vec2NumMicroSteps.y++;
 
 			if (i32vec2NumMicroSteps.y >= cSettings->NUM_STEPS_PER_TILE_YAXIS)
 			{
 				i32vec2NumMicroSteps.y = 0;
-				vec2Index.y += petSpeed;
+				vec2Index.y++;
 			}
 		}
 

@@ -113,6 +113,9 @@ protected:
 	// Handler to the CMap2D instance
 	CMap2D* cMap2D;
 
+	// Current generated A* pathfinding route
+	vector<glm::vec2> path;
+
 	// A transformation matrix for controlling where to render the entities
 	glm::mat4 transform;
 
@@ -185,9 +188,6 @@ protected:
 	// Check if the enemy2D is in mid-air
 	bool IsMidAir(void);
 
-	// Update Jump or Fall
-	void UpdateJumpFall(const double dElapsedTime = 0.0166666666666667);
-
 	// Let enemy2D interact with the player
 	bool InteractWithPlayer(void);
 
@@ -206,5 +206,8 @@ protected:
 
 	// Update position
 	void UpdatePosition(void);
+
+	// Update position
+	void UpdatePatrol(void);
 };
 

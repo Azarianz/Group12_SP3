@@ -144,9 +144,6 @@ protected:
 	// Current FSM
 	FSM sCurrentFSM;
 
-	//Pet Speed Variable (Currently Unused)
-	float petSpeed = 1.0f;
-
 	// Keyboard Controller singleton instance
 	CKeyboardController* cKeyboardController;
 
@@ -159,17 +156,14 @@ protected:
 	// Max count in a state
 	const int iMaxFSMCounter = 15;
 
+	// Current generated A* pathfinding route
+	vector<glm::vec2> path;
+
 	// Constraint the enemy2D's position within a boundary
 	void Constraint(DIRECTION eDirection = LEFT);
 
 	// Check if a position is possible to move into
 	bool CheckPosition(DIRECTION eDirection);
-
-	// Check if the enemy2D is in mid-air
-	bool IsMidAir(void);
-
-	// Update Jump or Fall
-	void UpdateJumpFall(const double dElapsedTime = 0.0166666666666667);
 
 	// Let pet2D interact with the enemy
 	void InteractWithMap(void);

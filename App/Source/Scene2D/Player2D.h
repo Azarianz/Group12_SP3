@@ -122,16 +122,9 @@ protected:
 	// Check if a position is possible to move into
 	bool CheckPosition(DIRECTION eDirection);
 
-	// Check if the player is in mid-air
-	bool IsMidAir(void);
-
-	// Update Jump or Fall
-	void UpdateJumpFall(const double dElapsedTime = 0.0166666666666667);
-
 	// Let player interact with the map
 	void InteractWithMap(void);
 
 	//Update Health and Lives
 	void UpdateHealthLives(void);
 };
-
