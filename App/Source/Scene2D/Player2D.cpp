@@ -236,7 +236,7 @@ void CPlayer2D::Update(const double dElapsedTime)
 			// Calculate the new position to the right
 			if (vec2Index.x < (int)cSettings->NUM_TILES_XAXIS)
 			{
-				vec2NumMicroSteps.x++;
+				vec2NumMicroSteps.x += playerSpeed;
 
 				if (vec2NumMicroSteps.x >= cSettings->NUM_STEPS_PER_TILE_XAXIS)
 				{
@@ -261,12 +261,13 @@ void CPlayer2D::Update(const double dElapsedTime)
 			//CS: Change Color
 			runtimeColour = glm::vec4(1.0, 1.0, 1.0, 1.0);
 		}
-		if (cKeyboardController->IsKeyDown(GLFW_KEY_W))
+		else if (cKeyboardController->IsKeyDown(GLFW_KEY_W))
 		{
 			// Calculate the new position up
 			if (vec2Index.y < (int)cSettings->NUM_TILES_YAXIS)
 			{
-				vec2NumMicroSteps.y++;
+				vec2NumMicroSteps.y += playerSpeed
+					;
 				if (vec2NumMicroSteps.y > cSettings->NUM_STEPS_PER_TILE_YAXIS)
 				{
 					vec2NumMicroSteps.y = 0;
@@ -295,7 +296,7 @@ void CPlayer2D::Update(const double dElapsedTime)
 			// Calculate the new position down
 			if (vec2Index.y >= 0)
 			{
-				vec2NumMicroSteps.y--;
+				vec2NumMicroSteps.y -= playerSpeed;
 				if (vec2NumMicroSteps.y < 0)
 				{
 					vec2NumMicroSteps.y = ((int)cSettings->NUM_STEPS_PER_TILE_YAXIS) - 1;

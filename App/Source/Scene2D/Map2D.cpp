@@ -250,7 +250,7 @@ std::vector<glm::vec2> CMap2D::PathFind(const glm::vec2& startPos,
 			while (m_openList.size() != 0)
 				m_openList.pop();
 			break;
-		}
+		}///
 
 		m_openList.pop();
 		m_closedList[ConvertTo1D(currentPos)] = true;
@@ -346,21 +346,18 @@ void CMap2D::PrintSelf(void) const
 {
 	cout << endl << "AStar::PrintSelf()" << endl;
 
-	for (unsigned uiLevel = 0; uiLevel < uiNumLevels; uiLevel++)
+	cout << "Level: 1" << endl;
+	for (unsigned uiRow = 0; uiRow < cSettings->NUM_TILES_YAXIS; uiRow++)
 	{
-		cout << "Level: " << uiLevel << endl;
-		for (unsigned uiRow = 0; uiRow < cSettings->NUM_TILES_YAXIS; uiRow++)
+		for (unsigned uiCol = 0; uiCol < cSettings->NUM_TILES_XAXIS; uiCol++)
 		{
-			for (unsigned uiCol = 0; uiCol < cSettings->NUM_TILES_XAXIS; uiCol++)
-			{
-				cout.fill('0');
-				cout.width(3);
-				cout << arrMapInfo[uiLevel][uiRow][uiCol].value;
-				if (uiCol != cSettings->NUM_TILES_XAXIS - 1)
-					cout << ", ";
-				else
-					cout << endl;
-			}
+			cout.fill('0');
+			cout.width(3);
+			cout << arrMapInfo[0][uiRow][uiCol].value;
+			if (uiCol != cSettings->NUM_TILES_XAXIS - 1)
+				cout << ", ";
+			else
+				cout << endl;
 		}
 	}
 

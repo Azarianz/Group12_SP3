@@ -159,13 +159,15 @@ void CEnemy2D::Update(const double dElapsedTime)
 
 	if (cKeyboardController->IsKeyReleased(GLFW_KEY_SPACE))
 	{
+		// Find player last location when hey use the whistle
 		playerLast = cPlayer2D->vec2Index;
 		path = cMap2D->PathFind(vec2Index,
 			playerLast,
 			heuristic::manhattan,
 			10);
+		iFSMCounter = 0;
 		sCurrentFSM = HUNTING;
-		cout << "Calculating demon path..." << endl;
+		cMap2D->PrintSelf();
 	}
 
 	if (!bIsActive)
@@ -189,6 +191,7 @@ void CEnemy2D::Update(const double dElapsedTime)
 			}
 			iFSMCounter = 0;
 		}
+
 		iFSMCounter++;
 		break;
 	case PATROL:
@@ -207,6 +210,8 @@ void CEnemy2D::Update(const double dElapsedTime)
 			sCurrentFSM = IDLE;
 			iFSMCounter = 0;
 		}
+
+		//If player is close to the enemy
 		else if (cPhysics2D.CalculateDistance(vec2Index, cPlayer2D->vec2Index) < 7.0f)
 		{
 			sCurrentFSM = CHASE;
@@ -228,21 +233,21 @@ void CEnemy2D::Update(const double dElapsedTime)
 
 			path = cMap2D->PathFind(vec2Index,
 				cPlayer2D->vec2Index,
-				heuristic::manhattan,
+				heuristic::euclidean,
 				10);
 
 			for (const auto& coord : path)
 			{
 				// Set a destination
-				i32vec2Destination = coord;
+				i32vec2Direction = coord;
 				// Calculate the direction between enemy2D and this destination
 				i32vec2Direction = i32vec2Destination - vec2Index;
 			}
 
-			cSoundController->PlaySoundByID(5);
-
 			// Update the Enemy2D's position for attack
 			UpdatePosition();
+
+			cSoundController->PlaySoundByID(5);
 		}
 		else
 		{
@@ -271,13 +276,10 @@ void CEnemy2D::Update(const double dElapsedTime)
 				cout << "Reached destination" << endl;
 				sCurrentFSM = IDLE;
 				iFSMCounter = 0;
-				break;
 			}
 		}
 
-		// Update the Enemy2D's position for attack
-		UpdatePosition();
-
+		// if the player is spotted, switch to chase
 		if (cPhysics2D.CalculateDistance(vec2Index, cPlayer2D->vec2Index) < 7.0f)
 		{
 			sCurrentFSM = CHASE;
@@ -285,6 +287,9 @@ void CEnemy2D::Update(const double dElapsedTime)
 
 			cout << "Switching to Enemy::CHASE State" << endl;
 		}
+
+		// Update the Enemy2D's position for attack
+		UpdatePosition();
 
 	case STUNNED:
 		if (iFSMCounter > stunnedCounter)
@@ -316,8 +321,6 @@ void CEnemy2D::Update(const double dElapsedTime)
 				{
 					// Set a destination
 					flareOldIndex = coord;
-					// Calculate the direction between enemy2D and this destination
-					i32vec2Direction = flareOldIndex - vec2Index;
 					bFirstPosition = false;
 				}
 				else
@@ -455,7 +458,7 @@ void CEnemy2D::Constraint(DIRECTION eDirection)
 {
 	if (eDirection == LEFT)
 	{
-		if (vec2Index.x < 0)
+		if (vec2Index.x <= 0)
 		{
 			vec2Index.x = 0;
 			i32vec2NumMicroSteps.x = 0;
@@ -479,7 +482,7 @@ void CEnemy2D::Constraint(DIRECTION eDirection)
 	}
 	else if (eDirection == DOWN)
 	{
-		if (vec2Index.y < 0)
+		if (vec2Index.y <= 0)
 		{
 			vec2Index.y = 0;
 			i32vec2NumMicroSteps.y = 0;
@@ -497,15 +500,21 @@ void CEnemy2D::Constraint(DIRECTION eDirection)
  */
 bool CEnemy2D::CheckPosition(DIRECTION eDirection)
 {
-	cout << "Direction: " << eDirection << endl;
-	cout << "x: " << vec2Index.x << " y: " << vec2Index.y << endl;
 	if (eDirection == LEFT)
 	{
+		cout << "direction: LEFT" << endl;
+		//If the position is at the left end
+		if (vec2Index.x <= 0)
+		{
+			i32vec2NumMicroSteps.x = 0;
+			return false;
+		}
+
 		// If the new position is fully within a row, then check this row only
-		if (i32vec2NumMicroSteps.y == 0)
+		else if (i32vec2NumMicroSteps.y == 0)
 		{
 			// If the grid is not accessible, then return false
-			if (cMap2D->GetMapInfo(vec2Index.y, vec2Index.x - 1) == 100)
+			if (cMap2D->GetMapInfo(vec2Index.y, vec2Index.x) == 100)
 			{
 				return false;
 			}
@@ -514,8 +523,8 @@ bool CEnemy2D::CheckPosition(DIRECTION eDirection)
 		else if (i32vec2NumMicroSteps.y != 0)
 		{
 			// If the 2 grids are not accessible, then return false
-			if (((cMap2D->GetMapInfo(vec2Index.y, vec2Index.x) == 100) && (cMap2D->GetMapInfo(vec2Index.y - 1, vec2Index.x - 1) == 100))
-				|| ((cMap2D->GetMapInfo(vec2Index.y, vec2Index.x) == 100) &&(cMap2D->GetMapInfo(vec2Index.y + 1, vec2Index.x - 1) == 100)))
+			if ((cMap2D->GetMapInfo(vec2Index.y, vec2Index.x) == 100) ||
+				(cMap2D->GetMapInfo(vec2Index.y, vec2Index.x - 1) == 100))
 			{
 				return false;
 			}
@@ -523,18 +532,19 @@ bool CEnemy2D::CheckPosition(DIRECTION eDirection)
 	}
 	else if (eDirection == RIGHT)
 	{
-		// If the new position is at the top row, then return true
+		cout << "direction: RIGHT" << endl;
+		// If the new position is at the right end
 		if (vec2Index.x >= cSettings->NUM_TILES_XAXIS - 1)
 		{
 			i32vec2NumMicroSteps.x = 0;
-			return true;
+			return false;
 		}
 
 		// If the new position is fully within a row, then check this row only
-		if (i32vec2NumMicroSteps.y == 0)
+		else if (i32vec2NumMicroSteps.y == 0)
 		{
 			// If the grid is not accessible, then return false
-			if (cMap2D->GetMapInfo(vec2Index.y, vec2Index.x + 1) == 100)
+			if (cMap2D->GetMapInfo(vec2Index.y, vec2Index.x) == 100)
 			{
 				return false;
 			}
@@ -543,9 +553,9 @@ bool CEnemy2D::CheckPosition(DIRECTION eDirection)
 		else if (i32vec2NumMicroSteps.y != 0)
 		{
 			// If the 2 grids are not accessible, then return false
-			if (((cMap2D->GetMapInfo(vec2Index.y, vec2Index.x) == 100) && (cMap2D->GetMapInfo(vec2Index.y - 1, vec2Index.x + 1) == 100))
-				|| ((cMap2D->GetMapInfo(vec2Index.y, vec2Index.x) == 100) && (cMap2D->GetMapInfo(vec2Index.y + 1, vec2Index.x + 1) == 100)))
-			{		
+			if ((cMap2D->GetMapInfo(vec2Index.y, vec2Index.x) == 100) ||
+				(cMap2D->GetMapInfo(vec2Index.y, vec2Index.x + 1) == 100))
+			{
 				return false;
 			}
 		}
@@ -553,18 +563,19 @@ bool CEnemy2D::CheckPosition(DIRECTION eDirection)
 	}
 	else if (eDirection == UP)
 	{
-		// If the new position is at the top row, then return true
+		cout << "direction: UP" << endl;
+		// If the new position is at the top end
 		if (vec2Index.y >= cSettings->NUM_TILES_YAXIS - 1)
 		{
 			i32vec2NumMicroSteps.y = 0;
-			return true;
+			return false;
 		}
 
 		// If the new position is fully within a column, then check this column only
-		if (i32vec2NumMicroSteps.x == 0)
+		else if (i32vec2NumMicroSteps.x == 0)
 		{
 			// If the grid is not accessible, then return false
-			if (cMap2D->GetMapInfo(vec2Index.y + 1, vec2Index.x) >= 100)
+			if (cMap2D->GetMapInfo(vec2Index.y, vec2Index.x) >= 100)
 			{
 				return false;
 			}
@@ -573,41 +584,39 @@ bool CEnemy2D::CheckPosition(DIRECTION eDirection)
 		else if (i32vec2NumMicroSteps.x != 0)
 		{
 			// If the 2 grids are not accessible, then return false
-			if (((cMap2D->GetMapInfo(vec2Index.y, vec2Index.x) == 100) && (cMap2D->GetMapInfo(vec2Index.y + 1, vec2Index.x + 1) == 100))
-				|| ((cMap2D->GetMapInfo(vec2Index.y, vec2Index.x) == 100) && (cMap2D->GetMapInfo(vec2Index.y + 1, vec2Index.x - 1) == 100)))
+			if ((cMap2D->GetMapInfo(vec2Index.y, vec2Index.x) == 100) ||
+				(cMap2D->GetMapInfo(vec2Index.y + 1, vec2Index.x) == 100))
 			{
 				return false;
 			}
 		}
-
-		cout << "ENEMY DIR: UP" << endl;
 	}
 	else if (eDirection == DOWN)
 	{
+		cout << "direction: DOWN" << endl;
+		// If the new position is at the bottom end
 		if (vec2Index.y <= 0)
 		{
-			cout << "Demon is outside the bottom screen" << endl;
 			i32vec2NumMicroSteps.y = 0;
-			return true;
+			return false;
 
 		}
 
-		// If the new position is between 2 columns, then check both columns as well
-		else if (i32vec2NumMicroSteps.x != 0)
+		// If the new position is fully within a column, then check this column only
+		else if (i32vec2NumMicroSteps.x == 0)
 		{
-			// If the 2 grids are not accessible, then return false
-			if (((cMap2D->GetMapInfo(vec2Index.y, vec2Index.x) == 100) && (cMap2D->GetMapInfo(vec2Index.y - 1, vec2Index.x + 1) == 100))
-				|| ((cMap2D->GetMapInfo(vec2Index.y, vec2Index.x) == 100) && (cMap2D->GetMapInfo(vec2Index.y - 1, vec2Index.x - 1) == 100)))
+			// If the grid is not accessible, then return false
+			if (cMap2D->GetMapInfo(vec2Index.y, vec2Index.x) >= 100)
 			{
 				return false;
 			}
 		}
 
-		// If the new position is fully within a column, then check this column only
-		if (i32vec2NumMicroSteps.x == 0)
+		// If the new position is between 2 columns, then check both columns as well
+		else if (i32vec2NumMicroSteps.x != 0)
 		{
-			// If the grid is not accessible, then return false
-			if (cMap2D->GetMapInfo(vec2Index.y - 1, vec2Index.x) >= 100)
+			if ((cMap2D->GetMapInfo(vec2Index.y, vec2Index.x) == 100) ||
+				(cMap2D->GetMapInfo(vec2Index.y - 1, vec2Index.x) == 100))
 			{
 				return false;
 			}
@@ -701,50 +710,54 @@ void CEnemy2D::FlipRandomDirection(void)
 {
 	while (true)
 	{
-		cout << "Finding a direction" << endl;
 		//Reset Direction
 		i32vec2Direction.x = 0;
 		i32vec2Direction.y = 0;
 
-		int temp = rand() % 4 + 1;
+		int temp = rand() % 4;
 
-		if (temp == 1)
-		{
-			if (CheckPosition(RIGHT) == true)
-			{
-				i32vec2Direction.x = 1;
-				break;
-			}
-		}
-
-		else if (temp == 2)
+		if (temp == UP)
 		{			
 			if (CheckPosition(UP) == true)
 			{
+				cout << "CheckPosition(UP): " << CheckPosition(UP) << endl;
 				i32vec2Direction.y = 1;
 				break;
 			}
 		}
 
-		else if (temp == 3)
-		{			
-			if (CheckPosition(LEFT) == true)
-			{
-				i32vec2Direction.x = -1;
-				break;
-			}
-		}
-
-		else if (temp == 4)
-		{		
+		else if (temp == DOWN)
+		{
 			if (CheckPosition(DOWN) == true)
 			{
+				cout << "CheckPosition(DOWN): " << CheckPosition(DOWN) << endl;
 				i32vec2Direction.y = -1;
 				break;
 			}
 		}
 
-		temp = -1;	
+		else if (temp == LEFT)
+		{			
+			if (CheckPosition(LEFT) == true)
+			{
+				cout << "CheckPosition(LEFT): " << CheckPosition(LEFT) << endl;
+				i32vec2Direction.x = -1;
+				break;
+			}
+		}
+
+		else if (temp == RIGHT)
+		{
+			if (CheckPosition(RIGHT) == true)
+			{
+				cout << "CheckPosition(RIGHT): " << CheckPosition(RIGHT) << endl;
+				i32vec2Direction.x = 1;
+				break;
+			}
+		}
+
+		temp = rand() % 4;
+		cout << "temp: " << temp << endl;
 	}
 }
 
@@ -790,7 +803,7 @@ void CEnemy2D::UpdatePosition(void)
 		const int iOldIndex = vec2Index.x;
 		if (vec2Index.x >= 0)
 		{
-			i32vec2NumMicroSteps.x--;
+			i32vec2NumMicroSteps.x -= enemySpeed;
 			if (i32vec2NumMicroSteps.x < 0)
 			{
 				i32vec2NumMicroSteps.x = ((int)cSettings->NUM_STEPS_PER_TILE_XAXIS) - 1;
@@ -804,7 +817,6 @@ void CEnemy2D::UpdatePosition(void)
 		// Find a feasible position for the enemy2D's current position
 		if (CheckPosition(LEFT) == false)
 		{
-			//FlipRandomDirection();
 			vec2Index = i32vec2OldIndex;
 			i32vec2NumMicroSteps.x = 0;
 		}
@@ -818,7 +830,7 @@ void CEnemy2D::UpdatePosition(void)
 		const int iOldIndex = vec2Index.x;
 		if (vec2Index.x < (int)cSettings->NUM_TILES_XAXIS)
 		{
-			i32vec2NumMicroSteps.x++;
+			i32vec2NumMicroSteps.x += enemySpeed;
 
 			if (i32vec2NumMicroSteps.x >= cSettings->NUM_STEPS_PER_TILE_XAXIS)
 			{
@@ -833,7 +845,6 @@ void CEnemy2D::UpdatePosition(void)
 		// Find a feasible position for the enemy2D's current position
 		if (CheckPosition(RIGHT) == false)
 		{
-			//FlipRandomDirection();
 			vec2Index = i32vec2OldIndex;
 			i32vec2NumMicroSteps.x = 0;
 		}
@@ -841,13 +852,13 @@ void CEnemy2D::UpdatePosition(void)
 		// Interact with the Player
 		InteractWithPlayer();
 	}
-	if (i32vec2Direction.y < 0)
+	else if (i32vec2Direction.y < 0)
 	{
 		// Move down
 		const int iOldIndex = vec2Index.y;
 		if (vec2Index.y >= 0)
 		{
-			i32vec2NumMicroSteps.y--;
+			i32vec2NumMicroSteps.y -= enemySpeed;
 			if (i32vec2NumMicroSteps.y < 0)
 			{
 				i32vec2NumMicroSteps.y = ((int)cSettings->NUM_STEPS_PER_TILE_YAXIS) - 1;
@@ -874,7 +885,7 @@ void CEnemy2D::UpdatePosition(void)
 		const int iOldIndex = vec2Index.y;
 		if (vec2Index.y < (int)cSettings->NUM_TILES_YAXIS)
 		{
-			i32vec2NumMicroSteps.y++;
+			i32vec2NumMicroSteps.y += enemySpeed;
 
 			if (i32vec2NumMicroSteps.y >= cSettings->NUM_STEPS_PER_TILE_YAXIS)
 			{
@@ -895,9 +906,7 @@ void CEnemy2D::UpdatePosition(void)
 
 		// Interact with the Player
 		InteractWithPlayer();
-
 	}
-
 }
 
 /**
@@ -908,14 +917,12 @@ void CEnemy2D::UpdatePatrol(void)
 	// Store the old position
 	i32vec2OldIndex = vec2Index;
 
-	// if the player is to the left or right of the enemy2D, then jump to attack
 	if (i32vec2Direction.x < 0)
 	{
 		// Move left
-		const int iOldIndex = vec2Index.x;
 		if (vec2Index.x >= 0)
 		{
-			i32vec2NumMicroSteps.x--;
+			i32vec2NumMicroSteps.x -= enemySpeed;
 			if (i32vec2NumMicroSteps.x < 0)
 			{
 				i32vec2NumMicroSteps.x = ((int)cSettings->NUM_STEPS_PER_TILE_XAXIS) - 1;
@@ -929,9 +936,9 @@ void CEnemy2D::UpdatePatrol(void)
 		// Find a feasible position for the enemy2D's current position
 		if (CheckPosition(LEFT) == false)
 		{
-			FlipRandomDirection();
 			vec2Index = i32vec2OldIndex;
 			i32vec2NumMicroSteps.x = 0;
+			FlipRandomDirection();
 		}
 
 		// Interact with the Player
@@ -940,11 +947,9 @@ void CEnemy2D::UpdatePatrol(void)
 	else if (i32vec2Direction.x > 0)
 	{
 		// Move right
-		const int iOldIndex = vec2Index.x;
 		if (vec2Index.x < (int)cSettings->NUM_TILES_XAXIS)
 		{
-			i32vec2NumMicroSteps.x++;
-
+			i32vec2NumMicroSteps.x += enemySpeed;
 			if (i32vec2NumMicroSteps.x >= cSettings->NUM_STEPS_PER_TILE_XAXIS)
 			{
 				i32vec2NumMicroSteps.x = 0;
@@ -958,21 +963,21 @@ void CEnemy2D::UpdatePatrol(void)
 		// Find a feasible position for the enemy2D's current position
 		if (CheckPosition(RIGHT) == false)
 		{
-			FlipRandomDirection();
 			vec2Index = i32vec2OldIndex;
 			i32vec2NumMicroSteps.x = 0;
+			FlipRandomDirection();
 		}
 
 		// Interact with the Player
 		InteractWithPlayer();
 	}
-	if (i32vec2Direction.y < 0)
+
+	else if (i32vec2Direction.y < 0)
 	{
 		// Move down
-		const int iOldIndex = vec2Index.y;
 		if (vec2Index.y >= 0)
 		{
-			i32vec2NumMicroSteps.y--;
+			i32vec2NumMicroSteps.y -= enemySpeed;
 			if (i32vec2NumMicroSteps.y < 0)
 			{
 				i32vec2NumMicroSteps.y = ((int)cSettings->NUM_STEPS_PER_TILE_YAXIS) - 1;
@@ -986,9 +991,9 @@ void CEnemy2D::UpdatePatrol(void)
 		// Find a feasible position for the enemy2D's current position
 		if (CheckPosition(DOWN) == false)
 		{
-			FlipRandomDirection();
 			vec2Index = i32vec2OldIndex;
 			i32vec2NumMicroSteps.y = 0;
+			FlipRandomDirection();
 		}
 
 		// Interact with the Player
@@ -997,11 +1002,9 @@ void CEnemy2D::UpdatePatrol(void)
 	else if (i32vec2Direction.y > 0)
 	{
 		// Move up
-		const int iOldIndex = vec2Index.y;
 		if (vec2Index.y < (int)cSettings->NUM_TILES_YAXIS)
 		{
-			i32vec2NumMicroSteps.y++;
-
+			i32vec2NumMicroSteps.y += enemySpeed;
 			if (i32vec2NumMicroSteps.y >= cSettings->NUM_STEPS_PER_TILE_YAXIS)
 			{
 				i32vec2NumMicroSteps.y = 0;
@@ -1015,15 +1018,13 @@ void CEnemy2D::UpdatePatrol(void)
 		// Find a feasible position for the enemy2D's current position
 		if (CheckPosition(UP) == false)
 		{
-			FlipRandomDirection();
 			vec2Index = i32vec2OldIndex;
 			i32vec2NumMicroSteps.y = 0;
+			FlipRandomDirection();
 		}
 
 		// Interact with the Player
 		InteractWithPlayer();
-
 	}
-
 
 }
