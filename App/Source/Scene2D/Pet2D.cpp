@@ -155,6 +155,7 @@ void CPet2D::Update(const double dElapsedTime)
 	if (cKeyboardController->IsKeyReleased(GLFW_KEY_SPACE))
 	{
 		sCurrentFSM = FOLLOW;
+		playerLast = cPlayer2D->vec2Index;
 
 		if (cSettings->MuteAudio == false)
 		{
@@ -167,7 +168,7 @@ void CPet2D::Update(const double dElapsedTime)
 				cout << "Calculating pet path..." << endl;
 				//Calculate a path to the player
 				path = cMap2D->PathFind(vec2Index,
-					cPlayer2D->vec2Index,
+					playerLast,
 					heuristic::manhattan,
 					10);
 				sCurrentFSM = FOLLOW;
@@ -191,23 +192,23 @@ void CPet2D::Update(const double dElapsedTime)
 
 		if (cPhysics2D.CalculateDistance(vec2Index, cPlayer2D->vec2Index) < 8.0f)
 		{
-			// Calculate new destination
-			bool bFirstPosition = true;
-			for (const auto& coord : path)
-			{
-				if (vec2Index != path[path.size() - 1])
-				{
-					// Set a destination
-					i32vec2Destination = coord;
-					// Calculate the direction between enemy2D and this destination
-					i32vec2Direction = i32vec2Destination - vec2Index;
-				}
-				else
-				{
-					cout << "Pet reached destination" << endl;
-					break;
-				}
-			}
+			//// Calculate new destination
+			//bool bFirstPosition = true;
+			//for (const auto& coord : path)
+			//{
+			//	if (vec2Index != path[path.size() - 1])
+			//	{
+			//		// Set a destination
+			//		i32vec2Destination = coord;
+			//		// Calculate the direction between enemy2D and this destination
+			//		i32vec2Direction = i32vec2Destination - vec2Index;
+			//	}
+			//	else
+			//	{
+			//		
+			//	}
+			//}
+			// 
 
 			// Update the Enemy2D's position for attack
 			UpdatePosition();
@@ -611,7 +612,7 @@ void CPet2D::UpdatePosition(void)
 		const int iOldIndex = vec2Index.x;
 		if (vec2Index.x >= 0)
 		{
-			i32vec2NumMicroSteps.x--;
+			i32vec2NumMicroSteps.x -= petSpeed;
 			if (i32vec2NumMicroSteps.x < 0)
 			{
 				i32vec2NumMicroSteps.x = ((int)cSettings->NUM_STEPS_PER_TILE_XAXIS) + 2;
@@ -639,7 +640,7 @@ void CPet2D::UpdatePosition(void)
 		const int iOldIndex = vec2Index.x;
 		if (vec2Index.x < (int)cSettings->NUM_TILES_XAXIS)
 		{
-			i32vec2NumMicroSteps.x++;
+			i32vec2NumMicroSteps.x += petSpeed;
 
 			if (i32vec2NumMicroSteps.x >= cSettings->NUM_STEPS_PER_TILE_XAXIS)
 			{
@@ -668,7 +669,7 @@ void CPet2D::UpdatePosition(void)
 		const int iOldIndex = vec2Index.y;
 		if (vec2Index.y >= 0)
 		{
-			i32vec2NumMicroSteps.y--;
+			i32vec2NumMicroSteps.y -= petSpeed;
 			if (i32vec2NumMicroSteps.y < 0)
 			{
 				i32vec2NumMicroSteps.y = ((int)cSettings->NUM_STEPS_PER_TILE_YAXIS) + 2;
@@ -696,7 +697,7 @@ void CPet2D::UpdatePosition(void)
 		const int iOldIndex = vec2Index.y;
 		if (vec2Index.y < (int)cSettings->NUM_TILES_YAXIS)
 		{
-			i32vec2NumMicroSteps.y++;
+			i32vec2NumMicroSteps.y += petSpeed;
 
 			if (i32vec2NumMicroSteps.y >= cSettings->NUM_STEPS_PER_TILE_YAXIS)
 			{

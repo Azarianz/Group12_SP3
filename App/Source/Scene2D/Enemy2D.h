@@ -201,6 +201,8 @@ protected:
 
 	void FlipRandomDirection(void);
 
+	void GenerateRandomPoint(void);
+
 	// Let player interact with the map
 	void InteractWithMap(void);
 
