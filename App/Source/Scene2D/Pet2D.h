@@ -140,6 +140,9 @@ protected:
 	//Player initial spawn location
 	glm::vec2 playerStart = glm::vec2(2, 6);
 
+	//Last Known Location
+	glm::vec2 playerLast;
+
 	// InventoryManager
 	CInventoryManager* cInventoryManager;
 
@@ -155,8 +158,10 @@ protected:
 	// FSM counter - count how many frames it has been in this FSM
 	int iFSMCounter;
 
+	float petSpeed = 1.5f;
+
 	// Max count in a state
-	const int iMaxFSMCounter = 15;
+	const int iMaxFSMCounter = 120;
 
 	// Current generated A* pathfinding route
 	vector<glm::vec2> path;

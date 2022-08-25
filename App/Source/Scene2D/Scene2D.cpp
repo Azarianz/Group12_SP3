@@ -254,6 +254,9 @@ void CScene2D::Render(void)
 {
 	// Call the CEnemy2D's PreRender()
 	cEnemy2D->PreRender();
+	// Call the CEnemy2D's Render()
+	cEnemy2D->Render();
+
 	// if the Enemy is within range, render it
 	if (((cPlayer2D->vec2Index.x - cEnemy2D->vec2Index.x < 7) && (cPlayer2D->vec2Index.x - cEnemy2D->vec2Index.x > -7)) &&
 		((cPlayer2D->vec2Index.y - cEnemy2D->vec2Index.y < 7) && (cPlayer2D->vec2Index.y - cEnemy2D->vec2Index.y > -7)))
@@ -267,6 +270,9 @@ void CScene2D::Render(void)
 	
 	// Call the CPet2D's PreRender()
 	cPet2D->PreRender();
+	// Call the CPet2D's Render()
+	//cPet2D->Render();
+
 	// if the Pet is within range, render it
 	if (((cPlayer2D->vec2Index.x - cPet2D->vec2Index.x < 7) && (cPlayer2D->vec2Index.x - cPet2D->vec2Index.x > -7)) &&
 		((cPlayer2D->vec2Index.y - cPet2D->vec2Index.y < 7) && (cPlayer2D->vec2Index.y - cPet2D->vec2Index.y > -7)))
