@@ -176,13 +176,7 @@ void CEnemy2D::Update(const double dElapsedTime)
 	switch (sCurrentFSM)
 	{
 	case IDLE:
-		if (cSettings->MuteAudio == false)
-		{
-			//Play Sound
-			cSoundController->PlaySoundByID(6);
-		}
-		cout << "DEMON IDLE" << endl;
-
+		
 		if (iFSMCounter > iMaxFSMCounter)
 		{
 			sCurrentFSM = PATROL;
@@ -198,12 +192,6 @@ void CEnemy2D::Update(const double dElapsedTime)
 		if (v1 == 3) {
 			cSoundController->PlaySoundByID(7);
 		}
-
-		if (cSettings->MuteAudio == false)
-		{
-			//Play Sound
-			cSoundController->PlaySoundByID(7);
-		}	
 
 		if (iFSMCounter > iMaxFSMCounter)
 		{
