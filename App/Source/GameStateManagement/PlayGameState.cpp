@@ -82,17 +82,6 @@ bool CPlayGameState::Update(const double dElapsedTime)
 		CKeyboardController::GetInstance()->Reset();
 
 		// Load the menu state
-		cout << "Loading MenuState" << endl;
-		CGameStateManager::GetInstance()->SetActiveGameState("MenuState");
-		CGameStateManager::GetInstance()->OffPauseGameState();
-		return true;
-	}
-	else if (CKeyboardController::GetInstance()->IsKeyReleased(GLFW_KEY_F10))
-	{
-		// Reset the CKeyboardController
-		CKeyboardController::GetInstance()->Reset();
-
-		// Load the menu state
 		cout << "Loading PauseState" << endl;
 		CGameStateManager::GetInstance()->SetPauseGameState("PauseState");
 	}

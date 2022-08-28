@@ -49,6 +49,8 @@ using namespace std;
 #include "GameStateManagement/PauseState.h"
 // Include CLoseWinState
 #include "GameStateManagement/LoseWinState.h"
+// Include CLoseWinState
+#include "GameStateManagement/JumpscareState.h"
 
 /**
  @brief Define an error callback
@@ -255,6 +257,7 @@ bool Application::Init(void)
 	CGameStateManager::GetInstance()->AddGameState("SettingMenuState", new CSettingMenuState());
 	CGameStateManager::GetInstance()->AddGameState("PlayGameState", new CPlayGameState());
 	CGameStateManager::GetInstance()->AddGameState("PauseState", new CPauseState());
+	CGameStateManager::GetInstance()->AddGameState("JumpscareState", new CJumpscareState());
 	CGameStateManager::GetInstance()->AddGameState("LoseWinState", new CLoseWinState());
 
 	// Set the active scene

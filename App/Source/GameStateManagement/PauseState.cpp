@@ -62,14 +62,16 @@ bool CPauseState::Init(void)
 {
 	cout << "CPauseState::Init()\n" << endl;
 
-	CShaderManager::GetInstance()->Use("Shader2D");
+	background = new CBackgroundEntity("Image/GUI/empty.png");
+	background->SetShader("Shader2D");
+	background->Init();
 	//CShaderManager::GetInstance()->activeShader->setInt("texture1", 0);
 
 	// Load the images for buttons
 	CImageLoader* il = CImageLoader::GetInstance();
-	VolumeIncreaseButtonData.fileName = "Image\\GUI\\VolumeIncreaseButton.png";
+	VolumeIncreaseButtonData.fileName = "Image\\GUI\\ResumeButton.png";
 	VolumeIncreaseButtonData.textureID = il->LoadTextureGetID(VolumeIncreaseButtonData.fileName.c_str(), false);
-	VolumeDecreaseButtonData.fileName = "Image\\GUI\\VolumeDecreaseButton.png";
+	VolumeDecreaseButtonData.fileName = "Image\\GUI\\MainMenuButton.png";
 	VolumeDecreaseButtonData.textureID = il->LoadTextureGetID(VolumeDecreaseButtonData.fileName.c_str(), false);
 
 	return true;
@@ -98,17 +100,14 @@ bool CPauseState::Update(const double dElapsedTime)
 		static int counter = 0;
 
 		// Create a window called "Hello, world!" and append into it.
-		ImGui::Begin("Main Menu", NULL, window_flags);
-		ImGui::SetWindowPos(ImVec2(CSettings::GetInstance()->iWindowWidth/2.0 - buttonWidth/2.0, 
-			CSettings::GetInstance()->iWindowHeight/3.0));				// Set the top-left of the window at (10,10)
+		ImGui::Begin("Pause Menu", NULL, window_flags);
+		ImGui::SetWindowPos(ImVec2(CSettings::GetInstance()->iWindowWidth / 2.0 - buttonWidth / 2.0,
+			CSettings::GetInstance()->iWindowHeight / 3.0));				// Set the top-left of the window at (10,10)
 		ImGui::SetWindowSize(ImVec2(CSettings::GetInstance()->iWindowWidth, CSettings::GetInstance()->iWindowHeight));
 
 		//Added rounding for nicer effect
 		ImGuiStyle& style = ImGui::GetStyle();
 		style.FrameRounding = 200.0f;
-
-		// Display the FPS
-		ImGui::TextColored(ImVec4(1, 1, 1, 1), "In-Game Menu");
 
 		// Add codes for Start button here
 		if (ImGui::ImageButton((ImTextureID)VolumeIncreaseButtonData.textureID,
@@ -117,17 +116,24 @@ bool CPauseState::Update(const double dElapsedTime)
 			// Reset the CKeyboardController
 			CKeyboardController::GetInstance()->Reset();
 
-			CSoundController::GetInstance()->MasterVolumeIncrease();
+			// Load the menu state
+			cout << "UnLoading PauseState" << endl;
+			CGameStateManager::GetInstance()->OffPauseGameState();
+
 		}
 		// Add codes for Exit button here
-		if (ImGui::ImageButton((ImTextureID)VolumeDecreaseButtonData.textureID,
+		else if (ImGui::ImageButton((ImTextureID)VolumeDecreaseButtonData.textureID,
 			ImVec2(buttonWidth, buttonHeight), ImVec2(0.0, 0.0), ImVec2(1.0, 1.0)))
 		{
 			// Reset the CKeyboardController
 			CKeyboardController::GetInstance()->Reset();
 
-			CSoundController::GetInstance()->MasterVolumeDecrease();
+			// Load the menu state
+			cout << "Loading MenuState" << endl;
+			CGameStateManager::GetInstance()->OffPauseGameState();
+			CGameStateManager::GetInstance()->SetActiveGameState("MenuState");			
 		}
+
 	ImGui::End();
 	}
 
@@ -152,9 +158,14 @@ bool CPauseState::Update(const double dElapsedTime)
 void CPauseState::Render(void)
 {
 	// Clear the screen and buffer
-	glClearColor(0.0f, 0.55f, 1.00f, 1.00f);
+	glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
 
-	//cout << "CPauseState::Render()\n" << endl;
+	//Render Background
+	background->Render();
+
+	// Rendering
+	ImGui::Render();
+	ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 }
 
 /**

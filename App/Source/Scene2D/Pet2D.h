@@ -158,7 +158,7 @@ protected:
 	// FSM counter - count how many frames it has been in this FSM
 	int iFSMCounter;
 
-	float petSpeed = 1.5f;
+	float petSpeed = 1.1f;
 
 	// Max count in a state
 	const int iMaxFSMCounter = 120;

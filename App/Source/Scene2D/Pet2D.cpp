@@ -154,25 +154,23 @@ void CPet2D::Update(const double dElapsedTime)
 
 	if (cKeyboardController->IsKeyReleased(GLFW_KEY_SPACE))
 	{
-		sCurrentFSM = FOLLOW;
 		playerLast = cPlayer2D->vec2Index;
+
+		if (cPhysics2D.CalculateDistance(vec2Index, cPlayer2D->vec2Index) < 10.0f)
+		{
+			cout << "Calculating pet path..." << endl;
+			//Calculate a path to the player
+			path = cMap2D->PathFind(vec2Index,
+				playerLast,
+				heuristic::manhattan,
+				10);
+			sCurrentFSM = FOLLOW;
+		}
 
 		if (cSettings->MuteAudio == false)
 		{
 			//Play Sound
 			cSoundController->PlaySoundByID(9);
-
-			
-			if (cPhysics2D.CalculateDistance(vec2Index, cPlayer2D->vec2Index) < 10.0f)
-			{
-				cout << "Calculating pet path..." << endl;
-				//Calculate a path to the player
-				path = cMap2D->PathFind(vec2Index,
-					playerLast,
-					heuristic::manhattan,
-					10);
-				sCurrentFSM = FOLLOW;
-			}
 		}
 	}
 
@@ -192,23 +190,34 @@ void CPet2D::Update(const double dElapsedTime)
 
 		if (cPhysics2D.CalculateDistance(vec2Index, cPlayer2D->vec2Index) < 8.0f)
 		{
-			//// Calculate new destination
-			//bool bFirstPosition = true;
-			//for (const auto& coord : path)
-			//{
-			//	if (vec2Index != path[path.size() - 1])
-			//	{
-			//		// Set a destination
-			//		i32vec2Destination = coord;
-			//		// Calculate the direction between enemy2D and this destination
-			//		i32vec2Direction = i32vec2Destination - vec2Index;
-			//	}
-			//	else
-			//	{
-			//		
-			//	}
-			//}
-			// 
+			path = cMap2D->PathFind(vec2Index,
+				playerLast,
+				heuristic::euclidean,
+				10);
+
+			// Calculate new destination
+			bool bFirstPosition = true;
+			for (const auto& coord : path)
+			{
+				if (vec2Index != playerLast)
+				{
+					// Set a destination
+					i32vec2Destination = coord;
+					// Calculate the direction between enemy2D and this destination
+					i32vec2Direction = i32vec2Destination - vec2Index;
+				}
+				else
+				{
+					if ((coord - i32vec2Destination) == i32vec2Direction)
+					{
+						// Set a destination
+						i32vec2Destination = coord;
+					}
+					else
+						break;
+				}
+			}
+			 
 
 			// Update the Enemy2D's position for attack
 			UpdatePosition();
@@ -328,23 +337,23 @@ void CPet2D::HiHzWhistle()
 {
 	cout << "im in" << endl;
 	sCurrentFSM = FOLLOW;
+	playerLast = cPlayer2D->vec2Index;
 
 	if (cSettings->MuteAudio == false)
 	{
 		//Play Sound
 		cSoundController->PlaySoundByID(9);
+	}
 
-
-		if (cPhysics2D.CalculateDistance(vec2Index, cPlayer2D->vec2Index) < 10.0f)
-		{
-			cout << "Calculating pet path..." << endl;
-			//Calculate a path to the player
-			path = cMap2D->PathFind(vec2Index,
-				cPlayer2D->vec2Index,
-				heuristic::manhattan,
-				10);
-			sCurrentFSM = FOLLOW;
-		}
+	if (cPhysics2D.CalculateDistance(vec2Index, cPlayer2D->vec2Index) < 10.0f)
+	{
+		cout << "Calculating pet path..." << endl;
+		//Calculate a path to the player
+		path = cMap2D->PathFind(vec2Index,
+			playerLast,
+			heuristic::manhattan,
+			10);
+		sCurrentFSM = FOLLOW;
 	}
 }
 
@@ -663,7 +672,7 @@ void CPet2D::UpdatePosition(void)
 		// Interact with the Player
 		InteractWithMap();
 	}
-	if (i32vec2Direction.y < 0)
+	else if (i32vec2Direction.y < 0)
 	{
 		// Move down
 		const int iOldIndex = vec2Index.y;

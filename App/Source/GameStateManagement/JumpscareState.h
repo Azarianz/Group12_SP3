@@ -1,7 +1,7 @@
 #pragma once
 
 /**
- CPauseState
+ CJumpscareState
  @brief This class is derived from CGameState. It will introduce the game to the player.
  By: Toh Da Jun
  Date: July 2021
@@ -23,13 +23,13 @@
 #define IMGUI_ACTIVE
 #endif
 
-class CPauseState : public CGameStateBase
+class CJumpscareState : public CGameStateBase
 {
 public:
 	// Constructor
-	CPauseState(void);
+	CJumpscareState(void);
 	// Destructor
-	~CPauseState(void);
+	~CJumpscareState(void);
 
 	// Init this class instance
 	virtual bool Init(void);
@@ -43,12 +43,6 @@ public:
 protected:
 	CBackgroundEntity* background;
 
-	struct ButtonData
-	{
-		std::string fileName;
-		unsigned textureID;
-	};
-
-	ButtonData VolumeIncreaseButtonData;
-	ButtonData VolumeDecreaseButtonData;
+	// How long the screen last (in frames)
+	float endTime = 60.0f;
 };

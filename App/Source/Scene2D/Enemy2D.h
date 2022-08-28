@@ -167,7 +167,7 @@ protected:
 	// Current FSM
 	FSM sCurrentFSM;
 
-	float enemySpeed = 2.0f;
+	float enemySpeed = 1.4f;
 
 	// FSM counter - count how many frames it has been in this FSM
 	int iFSMCounter;
@@ -190,6 +190,9 @@ protected:
 
 	// Let enemy2D interact with the player
 	bool InteractWithPlayer(void);
+
+	// Let enemy2D interact with the pet
+	bool InteractWithPet(void);
 
 	// Update direction
 	void UpdateDirection(void);

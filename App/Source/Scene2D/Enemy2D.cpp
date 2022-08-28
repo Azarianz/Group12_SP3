@@ -28,6 +28,9 @@ using namespace std;
 // Include soundcontroller
 #include "../SoundController/SoundController.h"
 
+ // Include CGameStateManager
+#include "../GameStateManagement/GameStateManager.h"
+
 /**
  @brief Constructor This constructor has protected access modifier as this class will be a Singleton
  */
@@ -92,6 +95,8 @@ bool CEnemy2D::Init(void)
 
 	cSoundController = CSoundController::GetInstance();
 
+	cPet2D = CPet2D::GetInstance();
+
 	// Get the handler to the CMap2D instance
 	cMap2D = CMap2D::GetInstance();
 	// Find the indices for the player in arrMapInfo, and assign it to cPlayer2D
@@ -110,7 +115,6 @@ bool CEnemy2D::Init(void)
 
 	glGenVertexArrays(1, &VAO);
 	glBindVertexArray(VAO);
-
 
 	//CS: Create the Quad Mesh using the mesh builder
 	quadMesh = CMeshBuilder::GenerateQuad(glm::vec4(1, 1, 1, 1), cSettings->TILE_WIDTH, cSettings->TILE_HEIGHT);
@@ -146,28 +150,32 @@ void CEnemy2D::Update(const double dElapsedTime)
 {
 	v1 = rand() % 100;
 	cout << v1 << endl;
-	//if (sCurrentFSM != FLAREFLLW)
-	//{
-	//	unsigned int uiRow = -1;
-	//	unsigned int uiCol = -1;
-	//	if (cMap2D->FindValue(3, uiRow, uiCol)) {
-	//		sCurrentFSM = FLAREFLLW;
-	//		flareOldIndex = cPlayer2D->flareIndex;
-	//		//cout << "Fllwing Flare :3" << endl;
-	//	}
-	//}
-
+	if (sCurrentFSM != FLAREFLLW)
+	{
+		unsigned int uiRow = -1;
+		unsigned int uiCol = -1;
+		if (cMap2D->FindValue(3, uiRow, uiCol)) {
+			sCurrentFSM = FLAREFLLW;
+			flareOldIndex = cPlayer2D->flareIndex;
+			//cout << "Fllwing Flare :3" << endl;
+		}
+	}
+	
 	if (cKeyboardController->IsKeyReleased(GLFW_KEY_SPACE))
 	{
-		// Find player last location when hey use the whistle
-		playerLast = cPlayer2D->vec2Index;
-		path = cMap2D->PathFind(vec2Index,
-			playerLast,
-			heuristic::manhattan,
-			30);
-		iFSMCounter = 0;
-		sCurrentFSM = HUNTING;
-		cMap2D->PrintSelf();
+		// Ignore whistle if flare is up
+		if (sCurrentFSM != FLAREFLLW)
+		{
+			//Find player last location when they use the whistle
+			playerLast = cPlayer2D->vec2Index;
+			path = cMap2D->PathFind(vec2Index,
+				playerLast,
+				heuristic::manhattan,
+				10);
+			iFSMCounter = 0;
+			sCurrentFSM = HUNTING;
+			cMap2D->PrintSelf();
+		}
 	}
 
 	if (!bIsActive)
@@ -201,7 +209,8 @@ void CEnemy2D::Update(const double dElapsedTime)
 		}
 
 		//If player is close to the enemy
-		else if (cPhysics2D.CalculateDistance(vec2Index, cPlayer2D->vec2Index) < 7.0f)
+		if (cPhysics2D.CalculateDistance(vec2Index, cPlayer2D->vec2Index) < 7.0f ||
+			cPhysics2D.CalculateDistance(vec2Index, cPet2D->vec2Index) < 7.0f)
 		{
 			sCurrentFSM = CHASE;
 			iFSMCounter = 0;
@@ -217,9 +226,12 @@ void CEnemy2D::Update(const double dElapsedTime)
 		iFSMCounter++;
 		break;
 	case CHASE:
-		if (cPhysics2D.CalculateDistance(vec2Index, cPlayer2D->vec2Index) < 7.0f)
+		//If Player & Pet is within Range OR Player is within range, chase the player
+		if ((cPhysics2D.CalculateDistance(vec2Index, cPlayer2D->vec2Index) < 7.0f &&
+			cPhysics2D.CalculateDistance(vec2Index, cPet2D->vec2Index) < 7.0f) || 
+			cPhysics2D.CalculateDistance(vec2Index, cPlayer2D->vec2Index) < 7.0f)
 		{
-			cout << "DEMON CHASE" << endl;
+			cout << "DEMON CHASE: PLAYER" << endl;
 
 			path = cMap2D->PathFind(vec2Index,
 				cPlayer2D->vec2Index,
@@ -257,6 +269,47 @@ void CEnemy2D::Update(const double dElapsedTime)
 
 			cSoundController->PlaySoundByID(5);
 		}
+		//If pet is within range but nothing else is, chase pet
+		else if (cPhysics2D.CalculateDistance(vec2Index, cPet2D->vec2Index) < 7.0f)
+		{
+			cout << "DEMON CHASE: PLAYER" << endl;
+
+			path = cMap2D->PathFind(vec2Index,
+				cPet2D->vec2Index,
+				heuristic::euclidean,
+				10);
+
+			// Calculate new destination
+			bool bFirstPosition = true;
+			for (const auto& coord : path)
+			{
+				if (bFirstPosition == true)
+				{
+					// Set a destination
+					i32vec2Destination = coord;
+					// Calculate the direction between enemy2D and player2D
+					i32vec2Direction = i32vec2Destination - vec2Index;
+					bFirstPosition = false;
+				}
+				else
+				{
+					if ((coord - i32vec2Destination) == i32vec2Direction)
+					{
+						// Set a destination
+						i32vec2Destination = coord;
+					}
+					else
+					{
+						break;
+					}
+				}
+			}
+
+			// Update the Enemy2D's position for attack
+			UpdatePosition();
+
+			cSoundController->PlaySoundByID(5);
+		}
 		else
 		{
 			sCurrentFSM = PATROL;
@@ -271,16 +324,15 @@ void CEnemy2D::Update(const double dElapsedTime)
 		// follow last player location
 		if (cPhysics2D.CalculateDistance(vec2Index, cPlayer2D->vec2Index) > 7.0f)
 		{
-			// Calculate new destination
 			path = cMap2D->PathFind(vec2Index,
 				playerLast,
 				heuristic::euclidean,
-				30);
+				10);
 
 			bool bFirstPosition = true;
 			for (const auto& coord : path)
 			{
-				std::cout << coord.x << "," << coord.y << "\n";
+				//std::cout << coord.x << "," << coord.y << "\n";
 
 				if (bFirstPosition == true)
 				{
@@ -308,7 +360,8 @@ void CEnemy2D::Update(const double dElapsedTime)
 		}
 		
 		// if the player is spotted, switch to chase
-		else if (cPhysics2D.CalculateDistance(vec2Index, cPlayer2D->vec2Index) < 7.0f)		
+		else if (cPhysics2D.CalculateDistance(vec2Index, cPlayer2D->vec2Index) < 7.0f ||
+			cPhysics2D.CalculateDistance(vec2Index, cPet2D->vec2Index) < 7.0f)
 		{
 			sCurrentFSM = CHASE;
 			iFSMCounter = 0;
@@ -338,6 +391,11 @@ void CEnemy2D::Update(const double dElapsedTime)
 		}
 		else if (cPhysics2D.CalculateDistance(vec2Index, cPlayer2D->flareIndex) > 1.0f)
 		{
+			path = cMap2D->PathFind(vec2Index,
+				flareOldIndex,
+				heuristic::euclidean,
+				10);
+
 			// Calculate new destination
 			bool bFirstPosition = true;
 			for (const auto& coord : path)
@@ -471,7 +529,7 @@ void CEnemy2D::SetPlayer2D(CPlayer2D* cPlayer2D)
 	this->cPlayer2D = cPlayer2D;
 
 	// Update the enemy's direction
-	UpdateDirection();
+	//UpdateDirection();
 }
 
 
@@ -528,28 +586,30 @@ bool CEnemy2D::CheckPosition(DIRECTION eDirection)
 	if (eDirection == LEFT)
 	{
 		cout << "direction: LEFT" << endl;
-		cout << "current location valid?: " << (cMap2D->GetMapInfo(vec2Index.y, vec2Index.x) == 100) << endl;
+		//cout << "current location valid?: " << (cMap2D->GetMapInfo(vec2Index.y, vec2Index.x) == 100) << endl;
+
+		if (vec2Index.x <= 0)
+		{
+			cout << "FALSE LEFT" << endl;
+			return false;
+		}
 
 		// If the new position is fully within a row, then check this row only
-		if (i32vec2NumMicroSteps.y == 0)
+		else if (i32vec2NumMicroSteps.y == 0)
 		{
 			// If the grid is not accessible, then return false
-			if (cMap2D->GetMapInfo(vec2Index.y, vec2Index.x) == 100)
+			if (cMap2D->GetMapInfo(vec2Index.y, vec2Index.x) >= 100)
 			{
 				return false;
 			}
-			else if (vec2Index.x <= 0)
-			{
-				cout << "FALSE LEFT" << endl;
-				return false;
-			}
+
 		}
 		// If the new position is between 2 rows, then check both rows as well
 		else if (i32vec2NumMicroSteps.y != 0)
 		{
 			// If the 2 grids are not accessible, then return false
-			if ((cMap2D->GetMapInfo(vec2Index.y, vec2Index.x) == 100) ||
-				(cMap2D->GetMapInfo(vec2Index.y, vec2Index.x - 1) == 100))
+			if ((cMap2D->GetMapInfo(vec2Index.y, vec2Index.x) >= 100) ||
+				(cMap2D->GetMapInfo(vec2Index.y, vec2Index.x - 1) >= 100))
 			{
 				return false;
 			}
@@ -559,26 +619,28 @@ bool CEnemy2D::CheckPosition(DIRECTION eDirection)
 	{
 		cout << "direction: RIGHT" << endl;
 
+		if (vec2Index.x >= (int)cSettings->NUM_TILES_XAXIS - 1)
+		{
+			cout << "FALSE RIGHT" << endl;
+			return false;
+		}
+
 		// If the new position is fully within a row, then check this row only
-		if (i32vec2NumMicroSteps.y == 0)
+		else if (i32vec2NumMicroSteps.y == 0)
 		{
 			// If the grid is not accessible, then return false
-			if (cMap2D->GetMapInfo(vec2Index.y, vec2Index.x) == 100)
+			if (cMap2D->GetMapInfo(vec2Index.y, vec2Index.x) >= 100)
 			{
 				return false;
 			}
-			else if (vec2Index.x >= (int)cSettings->NUM_TILES_XAXIS - 1)
-			{
-				cout << "FALSE RIGHT" << endl;
-				return false;
-			}
+
 		}
 		// If the new position is between 2 rows, then check both rows as well
 		else if (i32vec2NumMicroSteps.y != 0)
 		{
 			// If the 2 grids are not accessible, then return false
-			if ((cMap2D->GetMapInfo(vec2Index.y, vec2Index.x) == 100) ||
-				(cMap2D->GetMapInfo(vec2Index.y, vec2Index.x + 1) == 100))
+			if ((cMap2D->GetMapInfo(vec2Index.y, vec2Index.x) >= 100) ||
+				(cMap2D->GetMapInfo(vec2Index.y, vec2Index.x + 1) >= 100))
 			{
 				return false;
 			}
@@ -589,19 +651,18 @@ bool CEnemy2D::CheckPosition(DIRECTION eDirection)
 	{
 		cout << "direction: UP" << endl;
 
+		if (vec2Index.y >= (int)cSettings->NUM_TILES_YAXIS - 1)
+		{
+			cout << "FALSE UP" << endl;
+			return false;
+		}
+
 		// If the new position is fully within a column, then check this column only
-		if (i32vec2NumMicroSteps.x == 0)
+		else if (i32vec2NumMicroSteps.x == 0)
 		{
 			// If the grid is not accessible, then return false
 			if (cMap2D->GetMapInfo(vec2Index.y, vec2Index.x) >= 100)
 			{
-				return false;
-			}
-
-
-			else if (vec2Index.y >= (int)cSettings->NUM_TILES_YAXIS - 1)
-			{
-				cout << "FALSE UP" << endl;
 				return false;
 			}
 		}
@@ -609,8 +670,8 @@ bool CEnemy2D::CheckPosition(DIRECTION eDirection)
 		else if (i32vec2NumMicroSteps.x != 0)
 		{
 			// If the 2 grids are not accessible, then return false
-			if ((cMap2D->GetMapInfo(vec2Index.y, vec2Index.x) == 100) ||
-				(cMap2D->GetMapInfo(vec2Index.y + 1, vec2Index.x) == 100))
+			if ((cMap2D->GetMapInfo(vec2Index.y, vec2Index.x) >= 100) ||
+				(cMap2D->GetMapInfo(vec2Index.y + 1, vec2Index.x) >= 100))
 			{
 				return false;
 			}
@@ -621,18 +682,18 @@ bool CEnemy2D::CheckPosition(DIRECTION eDirection)
 	{
 		cout << "direction: DOWN" << endl;
 
+		if (vec2Index.y <= 0)
+		{
+			cout << "FALSE DOWN" << endl;
+			return false;
+		}
+
 		// If the new position is fully within a column, then check this column only
-		if (i32vec2NumMicroSteps.x == 0)
+		else if (i32vec2NumMicroSteps.x == 0)
 		{
 			// If the grid is not accessible, then return false
 			if (cMap2D->GetMapInfo(vec2Index.y, vec2Index.x) >= 100)
 			{
-				return false;
-			}
-
-			else if (vec2Index.y <= 0)
-			{
-				cout << "FALSE DOWN" << endl;
 				return false;
 			}
 		}
@@ -640,8 +701,8 @@ bool CEnemy2D::CheckPosition(DIRECTION eDirection)
 		// If the new position is between 2 columns, then check both columns as well
 		else if (i32vec2NumMicroSteps.x != 0)
 		{
-			if ((cMap2D->GetMapInfo(vec2Index.y, vec2Index.x) == 100) ||
-				(cMap2D->GetMapInfo(vec2Index.y - 1, vec2Index.x) == 100))
+			if ((cMap2D->GetMapInfo(vec2Index.y, vec2Index.x) >= 100) ||
+				(cMap2D->GetMapInfo(vec2Index.y - 1, vec2Index.x) >= 100))
 			{
 				return false;
 			}
@@ -657,7 +718,7 @@ bool CEnemy2D::CheckPosition(DIRECTION eDirection)
 }
 
 /**
- @brief Let enemy2D interact with the player.
+ @brief Let enemy2D interact with the Player
  */
 bool CEnemy2D::InteractWithPlayer(void)
 {
@@ -670,11 +731,39 @@ bool CEnemy2D::InteractWithPlayer(void)
 		((vec2Index.y >= i32vec2PlayerPos.y - 0.5) &&
 			(vec2Index.y <= i32vec2PlayerPos.y + 0.5)))
 	{
+
+		//Jumpscare
+
+		// Reset the CKeyboardController
+		CKeyboardController::GetInstance()->Reset();
+		cout << "Loading Jumpscare" << endl;
+		CSoundController::GetInstance()->PlaySoundByID(10);
+		CGameStateManager::GetInstance()->SetActiveGameState("JumpscareState");
+
+		return true;
+	}
+
+	return false;
+}
+
+/**
+ @brief Let enemy2D interact with the Pet
+ */
+bool CEnemy2D::InteractWithPet(void)
+{
+	glm::vec2 i32vec2PlayerPos = cPlayer2D->vec2Index;
+
+	// Check if the enemy2D is within 1.5 indices of the player2D
+	if (((vec2Index.x >= cPet2D->vec2Index.x - 0.5) &&
+		(vec2Index.x <= cPet2D->vec2Index.x + 0.5))
+		&&
+		((vec2Index.y >= cPet2D->vec2Index.y - 0.5) &&
+			(vec2Index.y <= cPet2D->vec2Index.y + 0.5)))
+	{
 		//cout << "Gotcha!" << endl;
 		// Remove health by 1 (Spa)
 		CInventoryItem* cInventoryItem = cInventoryManager->GetItem("Lives");
 		cInventoryItem->Remove(1);
-		cPlayer2D->vec2Index = playerStart;
 
 		// Since the player has been caught, then reset the FSM
 		sCurrentFSM = IDLE;
@@ -840,7 +929,7 @@ void CEnemy2D::UpdatePosition(void)
 	{
 		// Move left
 		const int iOldIndex = vec2Index.x;	
- 		if (vec2Index.x >= 0)
+ 		if (vec2Index.x > 0)
 		{
 			i32vec2NumMicroSteps.x -= enemySpeed;
    			if (i32vec2NumMicroSteps.x < 0)
@@ -862,7 +951,8 @@ void CEnemy2D::UpdatePosition(void)
 			//if patrol state
 			if (sCurrentFSM == PATROL)
 			{
-				GenerateRandomPoint();
+				FlipRandomDirection();
+				//GenerateRandomPoint();
 			}
 		}
 
@@ -870,12 +960,15 @@ void CEnemy2D::UpdatePosition(void)
 
 		// Interact with the Player
 		InteractWithPlayer();
+
+		// Interact with the Cat
+		InteractWithPet();
 	}
 	else if (i32vec2Direction.x > 0)
 	{		
 		// Move right
 		const int iOldIndex = vec2Index.x;
-		if (vec2Index.x < (int)cSettings->NUM_TILES_XAXIS)
+		if (vec2Index.x < (int)cSettings->NUM_TILES_XAXIS - 1)
 		{
 			i32vec2NumMicroSteps.x += enemySpeed;
 			if (i32vec2NumMicroSteps.x >= cSettings->NUM_STEPS_PER_TILE_XAXIS)
@@ -897,7 +990,8 @@ void CEnemy2D::UpdatePosition(void)
 			//if patrol state
 			if (sCurrentFSM == PATROL)
 			{
-				GenerateRandomPoint();
+				FlipRandomDirection();
+				//GenerateRandomPoint();
 			}
 		}
 
@@ -906,6 +1000,9 @@ void CEnemy2D::UpdatePosition(void)
 
 		// Interact with the Player
 		InteractWithPlayer();
+
+		// Interact with the Cat
+		InteractWithPet();
 	}
 	else if (i32vec2Direction.y < 0)
 	{
@@ -934,7 +1031,8 @@ void CEnemy2D::UpdatePosition(void)
 			//if patrol state
 			if (sCurrentFSM == PATROL)
 			{
-				GenerateRandomPoint();
+				FlipRandomDirection();
+				//GenerateRandomPoint();
 			}
 		}
 
@@ -942,12 +1040,15 @@ void CEnemy2D::UpdatePosition(void)
 
 		// Interact with the Player
 		InteractWithPlayer();
+
+		// Interact with the Cat
+		InteractWithPet();
 	}
 	else if (i32vec2Direction.y > 0)
 	{
 		// Move up
 		const int iOldIndex = vec2Index.y;
-		if (vec2Index.y < (int)cSettings->NUM_TILES_YAXIS)
+		if (vec2Index.y < (int)cSettings->NUM_TILES_YAXIS - 1)
 		{
 			i32vec2NumMicroSteps.y += enemySpeed;
 			if (i32vec2NumMicroSteps.y >= cSettings->NUM_STEPS_PER_TILE_YAXIS)
@@ -969,7 +1070,8 @@ void CEnemy2D::UpdatePosition(void)
 			//if patrol state
 			if (sCurrentFSM == PATROL)
 			{
-				GenerateRandomPoint();
+				FlipRandomDirection();
+				//GenerateRandomPoint();
 			}
 		}
 		
@@ -977,8 +1079,8 @@ void CEnemy2D::UpdatePosition(void)
 
 		// Interact with the Player
 		InteractWithPlayer();
-	}
 
-	vec2Index.x = (int)(vec2Index.x + 0.5);
-	vec2Index.y = (int)(vec2Index.y + 0.5);
+		// Interact with the Cat
+		InteractWithPet();
+	}
 }

@@ -277,7 +277,7 @@ std::vector<glm::vec2> CMap2D::PathFind(const glm::vec2& startPos,
 			if (m_cameFromList[neighborIndex].f == 0 || fNew < m_cameFromList[neighborIndex].f)
 			{
 				//cout << "Adding to Open List: " << neighborPos.x << ", " << neighborPos.y;
-				cout << ". [ f : " << fNew << ", g : " << gNew << ", h : " << hNew << "]" << endl;
+				//cout << ". [ f : " << fNew << ", g : " << gNew << ", h : " << hNew << "]" << endl;
 				m_openList.push(Grid(neighborPos, fNew));
 				m_cameFromList[neighborIndex] = { neighborPos, currentPos, fNew, gNew, hNew };
 			}
@@ -509,35 +509,35 @@ void CMap2D::Render(glm::vec2 PlayerPos)
 	{
 		for (unsigned int uiCol = 0; uiCol < cSettings->NUM_TILES_XAXIS; uiCol++)
 		{
-			transform = glm::mat4(1.0f); // make sure to initialize matrix to identity matrix first
-			transform = glm::translate(transform, glm::vec3(cSettings->ConvertIndexToUVSpace(cSettings->x, uiCol, false, 0),
-			cSettings->ConvertIndexToUVSpace(cSettings->y, uiRow, true, 0),
-				0.0f));
-			//transform = glm::rotate(transform, (float)glfwGetTime(), glm::vec3(0.0f, 0.0f, 1.0f));
+			//transform = glm::mat4(1.0f); // make sure to initialize matrix to identity matrix first
+			//transform = glm::translate(transform, glm::vec3(cSettings->ConvertIndexToUVSpace(cSettings->x, uiCol, false, 0),
+			//cSettings->ConvertIndexToUVSpace(cSettings->y, uiRow, true, 0),
+			//	0.0f));
+			////transform = glm::rotate(transform, (float)glfwGetTime(), glm::vec3(0.0f, 0.0f, 1.0f));
 
-			// Update the shaders with the latest transform
-			glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(transform));
+			//// Update the shaders with the latest transform
+			//glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(transform));
 
-			// Render a tile
-			RenderTile(uiRow, uiCol);
+			//// Render a tile
+			//RenderTile(uiRow, uiCol);
 
-			//if (((PlayerPos.x - uiCol < 7) && (PlayerPos.x - uiCol > -7)) &&
-			//	((PlayerPos.y - (30 - uiRow) < 7) && (PlayerPos.y - (30 - uiRow) > -7)))
-			//{
+			if (((PlayerPos.x - uiCol < 7) && (PlayerPos.x - uiCol > -7)) &&
+				((PlayerPos.y - (30 - uiRow) < 7) && (PlayerPos.y - (30 - uiRow) > -7)))
+			{
 
-			//	transform = glm::mat4(1.0f); // make sure to initialize matrix to identity matrix first
-			//	transform = glm::translate(transform, glm::vec3(cSettings->ConvertIndexToUVSpace(cSettings->x, uiCol, false, 0),
-			//		cSettings->ConvertIndexToUVSpace(cSettings->y, uiRow, true, 0),
-			//		0.0f));
-			//	//transform = glm::rotate(transform, (float)glfwGetTime(), glm::vec3(0.0f, 0.0f, 1.0f));
+				transform = glm::mat4(1.0f); // make sure to initialize matrix to identity matrix first
+				transform = glm::translate(transform, glm::vec3(cSettings->ConvertIndexToUVSpace(cSettings->x, uiCol, false, 0),
+					cSettings->ConvertIndexToUVSpace(cSettings->y, uiRow, true, 0),
+					0.0f));
+				//transform = glm::rotate(transform, (float)glfwGetTime(), glm::vec3(0.0f, 0.0f, 1.0f));
 
-			//	// Update the shaders with the latest transform
-			//	glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(transform));
+				// Update the shaders with the latest transform
+				glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(transform));
 
 
-			//	// Render a tile
-			//	RenderTile(uiRow, uiCol);
-			//}
+				// Render a tile
+				RenderTile(uiRow, uiCol);
+			}
 		}
 	}
 }

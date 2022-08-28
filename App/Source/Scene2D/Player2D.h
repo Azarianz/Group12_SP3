@@ -107,7 +107,7 @@ protected:
 	// Count the number of jumps
 	int iJumpCount;
 	int dirFacing = 1;
-	float playerSpeed = 2.4f;
+	float playerSpeed = 1.8f;
 	bool flareCollected, cerealCollected, itemCollected;
 
 	// Constructor

@@ -165,6 +165,7 @@ bool CScene2D::Init(void)
 	cSoundController->LoadSound(FileSystem::getPath("Sounds\\ghast2.ogg"), 7, true);
 	cSoundController->LoadSound(FileSystem::getPath("Sounds\\GhastCry.ogg"), 8, true);
 	cSoundController->LoadSound(FileSystem::getPath("Sounds\\Whristle.ogg"), 9, true);
+	cSoundController->LoadSound(FileSystem::getPath("Sounds\\Jumpscare.ogg"), 10, true);
 
 	return true;
 }
@@ -255,7 +256,7 @@ void CScene2D::Render(void)
 	// Call the CEnemy2D's PreRender()
 	cEnemy2D->PreRender();
 	// Call the CEnemy2D's Render()
-	cEnemy2D->Render();
+	//cEnemy2D->Render();
 
 	// if the Enemy is within range, render it
 	if (((cPlayer2D->vec2Index.x - cEnemy2D->vec2Index.x < 7) && (cPlayer2D->vec2Index.x - cEnemy2D->vec2Index.x > -7)) &&

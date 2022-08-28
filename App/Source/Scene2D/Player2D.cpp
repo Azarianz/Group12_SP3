@@ -376,7 +376,8 @@ void CPlayer2D::Update(const double dElapsedTime)
 		flareCollected = false;
 	}
 
-	if (cKeyboardController->IsKeyPressed(GLFW_KEY_E)) {
+	if (cKeyboardController->IsKeyPressed(GLFW_KEY_E)) 
+	{
 		cInventoryItem = cInventoryManager->GetItem("Whistle");
 
 		if (cInventoryItem->GetCount() > 0)
@@ -701,11 +702,6 @@ void CPlayer2D::InteractWithMap(void)
 		cInventoryItem = cInventoryManager->GetItem("Health");
 		cInventoryItem->Add(1);
 		break;
-	case 300:
-		// Remove health by 1 (Spa)
-		cInventoryItem = cInventoryManager->GetItem("Lives");
-		cInventoryItem->Remove(1);
-		vec2Index = playerStart;
 	default:
 		break;
 	}
